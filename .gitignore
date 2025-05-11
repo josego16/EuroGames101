@@ -1,0 +1,102 @@
+# Gradle files
+.gradle/
+build/
+**/build/
+!src/**/build/
+.kotlin/
+
+# Fleet
+.fleet
+
+# Local configuration file
+local.properties
+
+# Log Files
+*.log
+
+# Android Studio / IntelliJ IDEA
+*.iml
+*.ipr
+*.iws
+.idea/
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetDropDown.xml
+.idea/misc.xml
+.idea/compiler.xml
+.idea/gradle.xml
+.idea/.name
+.idea/kotlinc.xml
+.idea/jarRepositories.xml
+.idea/artifacts
+.idea/dictionaries
+.idea/shelf
+out/
+
+# Android
+.externalNativeBuild
+.cxx/
+captures/
+.navigation/
+output.json
+*.apk
+*.aab
+*.aar
+*.ap_
+*.dex
+
+# iOS / Xcode
+xcuserdata/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Kotlin Multiplatform
+.kotlin-js-store/
+kotlin-js-store/
+kotlin-native-data/
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# VS Code
+.vscode/
+.history/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
