@@ -1,13 +1,5 @@
 package com.eurogames.ui.user.auth
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -15,36 +7,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.eurogames.domain.models.user.auth.ForgotPassFormData
+import com.eurogames.ui.user.auth.components.AuthButton
+import com.eurogames.ui.user.auth.components.AuthScreenContainer
+import com.eurogames.ui.user.auth.components.AuthTextField
 
 @Composable
 fun ForgotPasswordScreen(
-    onSendEmailClick: (String) -> Unit,
+    onSendEmailClick: (ForgotPassFormData) -> Unit,
     onBackToLogin: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Recuperar contraseña", style = MaterialTheme.typography.titleLarge)
+    AuthScreenContainer(title = "Recuperar contraseña") {
+        AuthTextField("Correo electrónico", email, { email = it })
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Button(
-            onClick = { onSendEmailClick(email) },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-        ) {
-            Text("Enviar correo")
+        AuthButton("Enviar correo") {
+            onSendEmailClick(ForgotPassFormData(email))
         }
 
         TextButton(onClick = onBackToLogin) {
