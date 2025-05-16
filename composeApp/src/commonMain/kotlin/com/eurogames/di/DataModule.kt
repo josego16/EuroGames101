@@ -25,6 +25,10 @@ val dataModule = module {
                     protocol = URLProtocol.HTTP
                     host = parsedUrl.host
                     port = parsedUrl.port
+                    parameters.append(
+                        name = "apikey",
+                        value = "<KEY>"
+                    )
                 }
             }
         }
