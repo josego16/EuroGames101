@@ -1,15 +1,11 @@
 package com.eurogames.ui.core.navigation
 
 sealed class Routes(val route: String) {
-    //Home
     data object Home : Routes("home")
-
-    //Play
     data object Play : Routes("play")
-
-    //Ranking
     data object Ranking : Routes("ranking")
-
-    //Profile
     data object Profile : Routes("profile")
+    data object Logout : Routes("logout")
+    data object GuessTheFlag : Routes("play/guess_the_flag")
+    data object Quiz : Routes("play/quiz")
 }

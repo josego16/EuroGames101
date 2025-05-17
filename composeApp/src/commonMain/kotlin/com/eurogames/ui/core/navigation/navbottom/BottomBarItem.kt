@@ -1,9 +1,9 @@
 package com.eurogames.ui.core.navigation.navbottom
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Score
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.eurogames.ui.core.navigation.Routes
@@ -17,23 +17,23 @@ sealed class BottomBarItem {
         override val route: String = Routes.Play.route,
         override val title: String = "Play",
         override val icon: @Composable () -> Unit = {
-            Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play")
+            Icon(Icons.Default.Home, contentDescription = "Play")
         }
     ) : BottomBarItem()
 
-    data class Ranking(
-        override val route: String = Routes.Ranking.route,
-        override val title: String = "Ranking",
+    data class GuessTheFlag(
+        override val route: String = Routes.GuessTheFlag.route,
+        override val title: String = "Guess the Flag",
         override val icon: @Composable () -> Unit = {
-            Icon(imageVector = Icons.Default.Score, contentDescription = "Ranking")
+            Icon(Icons.Default.Flag, contentDescription = "Guess the Flag")
         }
     ) : BottomBarItem()
 
-    data class Profile(
-        override val route: String = Routes.Profile.route,
-        override val title: String = "Profile",
+    data class Quiz(
+        override val route: String = Routes.Quiz.route,
+        override val title: String = "Quiz",
         override val icon: @Composable () -> Unit = {
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Profile")
+            Icon(Icons.Default.Quiz, contentDescription = "Quiz")
         }
     ) : BottomBarItem()
 }
