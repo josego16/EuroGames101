@@ -30,21 +30,16 @@ fun NavigationWrapper() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val mainNavController = rememberNavController()
-    val drawerItems = listOf(
-        Home(),
-        Play(),
-        Ranking(),
-        Profile(),
-        Logout()
-    )
+    val drawerItems = listOf(Home(), Play(), Ranking(), Profile(), Logout())
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         gesturesEnabled = true,
-        modifier = Modifier,
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.width(220.dp).fillMaxHeight()
+                modifier = Modifier
+                    .width(220.dp)
+                    .fillMaxHeight()
             ) {
                 DrawerHeader(
                     onCloseClick = {
@@ -52,18 +47,22 @@ fun NavigationWrapper() {
                     }
                 )
                 drawerItems.forEach { item ->
+                    val currentRoute = mainNavController.currentBackStackEntryAsState().value?.destination?.route
+                    val selected = currentRoute == item.route
                     NavigationDrawerItem(
                         label = { Text(item.title) },
                         icon = item.icon,
-                        selected = mainNavController.currentBackStackEntryAsState().value?.destination?.route == item.route,
+                        selected = selected,
                         onClick = {
-                            scope.launch { drawerState.close() }
-                            mainNavController.navigate(item.route) {
-                                popUpTo(mainNavController.graph.startDestinationId) {
-                                    saveState = true
+                            scope.launch {
+                                drawerState.close()
+                                mainNavController.navigate(item.route) {
+                                    popUpTo(mainNavController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
                         },
                         modifier = Modifier.padding(8.dp)
@@ -72,8 +71,11 @@ fun NavigationWrapper() {
             }
         }
     ) {
-        Surface(modifier = Modifier) {
-            NavigationDrawerWrapper(navController = mainNavController)
+        Surface {
+            NavigationDrawerWrapper(
+                navController = mainNavController,
+                drawerState = drawerState
+            )
         }
     }
 }
