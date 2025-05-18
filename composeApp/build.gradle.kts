@@ -57,7 +57,9 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.ktor.client.negotiation)
+            implementation(libs.ktor.client.auth)
             implementation(libs.kotlin.serialization)
+            implementation(libs.ktor.client.logging)
 
             implementation(libs.uuid)
             implementation(libs.kotlinx.datetime)
