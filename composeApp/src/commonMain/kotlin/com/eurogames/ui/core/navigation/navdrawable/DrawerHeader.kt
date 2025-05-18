@@ -1,4 +1,4 @@
-package com.eurogames.ui.core.navigation.navdrawable.components
+package com.eurogames.ui.core.navigation.navdrawable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

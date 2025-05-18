@@ -1,4 +1,4 @@
-package com.eurogames.ui.user.auth
+package com.eurogames.ui.screens.user.auth
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -8,9 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.eurogames.domain.models.user.auth.SignInFormData
-import com.eurogames.ui.user.auth.components.AuthButton
-import com.eurogames.ui.user.auth.components.AuthScreenContainer
-import com.eurogames.ui.user.auth.components.AuthTextField
+import com.eurogames.ui.screens.user.auth.components.AuthButton
+import com.eurogames.ui.screens.user.auth.components.AuthScreenContainer
+import com.eurogames.ui.screens.user.auth.components.AuthTextField
 
 @Composable
 fun SignInScreen(

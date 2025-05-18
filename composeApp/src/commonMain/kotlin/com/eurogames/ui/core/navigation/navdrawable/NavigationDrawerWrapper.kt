@@ -11,7 +11,7 @@ import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
 import com.eurogames.ui.screens.logout.LogoutScreen
 import com.eurogames.ui.screens.play.PlayScreen
-import com.eurogames.ui.screens.profile.ProfileScreen
+import com.eurogames.ui.screens.user.profile.ProfileScreen
 import com.eurogames.ui.screens.ranking.RankingScreen
 import kotlinx.coroutines.launch
 
@@ -27,9 +27,7 @@ fun NavigationDrawerWrapper(
             MainScreen(
                 screenTitle = "Home",
                 screenContent = { HomeScreen() },
-                onDrawerClick = {
-                    scope.launch { drawerState.open() }
-                }
+                onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }
         composable(Routes.Play.route) {
