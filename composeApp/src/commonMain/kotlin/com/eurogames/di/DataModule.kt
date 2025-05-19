@@ -4,6 +4,8 @@ import com.eurogames.getBaseUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
@@ -25,11 +27,10 @@ val dataModule = module {
                     protocol = URLProtocol.HTTP
                     host = parsedUrl.host
                     port = parsedUrl.port
-                    parameters.append(
-                        name = "apikey",
-                        value = "<KEY>"
-                    )
                 }
+            }
+            install(Logging) {
+                level = LogLevel.ALL
             }
         }
     }

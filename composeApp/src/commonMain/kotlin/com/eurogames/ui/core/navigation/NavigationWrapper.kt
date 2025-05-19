@@ -14,12 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Home
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Logout
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Play
@@ -27,8 +25,6 @@ import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Profile
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Ranking
 import com.eurogames.ui.core.navigation.navdrawable.DrawerHeader
 import com.eurogames.ui.core.navigation.navdrawable.NavigationDrawerWrapper
-import com.eurogames.ui.screens.user.auth.ForgotPasswordScreen
-import com.eurogames.ui.screens.user.auth.ResetPasswordScreen
 import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
 import kotlinx.coroutines.launch
@@ -57,31 +53,6 @@ fun NavigationWrapper() {
             SignUpScreen(
                 onSignUp = {
                     mainNavController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.SignIn.route) { inclusive = true }
-                    }
-                },
-                onBackToSignIn = { mainNavController.popBackStack() }
-            )
-        }
-
-        composable(Routes.ForgotPassword.route) {
-            ForgotPasswordScreen(
-                onSendEmailClick = { mainNavController.navigate(Routes.SignIn.route) },
-                onBackToLogin = { mainNavController.popBackStack() }
-            )
-        }
-
-        composable(
-            route = Routes.ResetPassword.route,
-            arguments = listOf(navArgument("token") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val route = backStackEntry.destination.route ?: ""
-            val token = route.substringAfter("reset_password/").takeIf { it.isNotEmpty() } ?: ""
-
-            ResetPasswordScreen(
-                token = token,
-                onResetClick = {
-                    mainNavController.navigate(Routes.SignIn.route) {
                         popUpTo(Routes.SignIn.route) { inclusive = true }
                     }
                 },

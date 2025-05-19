@@ -7,4 +7,19 @@ class AndroidPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
-actual fun getBaseUrl(): String = "http://10.0.2.2:8081"
+actual fun getBaseUrl(): String {
+    return if (isEmulator()) {
+        "http://10.0.2.2:8081"
+    } else {
+        "http://192.168.10.143:8081"
+    }
+}
+
+private fun isEmulator(): Boolean {
+    return Build.FINGERPRINT.contains("generic")
+            || Build.FINGERPRINT.lowercase().contains("emulator")
+            || Build.MODEL.contains("Emulator")
+            || Build.MODEL.contains("Android SDK built for x86")
+            || Build.MANUFACTURER.contains("Genymotion")
+            || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+}
