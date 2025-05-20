@@ -11,8 +11,11 @@ import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
 import com.eurogames.ui.screens.logout.LogoutScreen
 import com.eurogames.ui.screens.play.PlayScreen
-import com.eurogames.ui.screens.user.profile.ProfileScreen
 import com.eurogames.ui.screens.ranking.RankingScreen
+import com.eurogames.ui.screens.user.auth.ForgotPasswordScreen
+import com.eurogames.ui.screens.user.auth.SignInScreen
+import com.eurogames.ui.screens.user.auth.SignUpScreen
+import com.eurogames.ui.screens.user.profile.ProfileScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,8 +57,43 @@ fun NavigationDrawerWrapper(
         composable(Routes.Logout.route) {
             MainScreen(
                 screenTitle = "Logout",
-                screenContent = { LogoutScreen() },
+                screenContent = {
+                    LogoutScreen(
+                        navController = navController,
+                    )
+                },
                 onDrawerClick = { scope.launch { drawerState.open() } }
+            )
+        }
+        composable(Routes.SignIn.route) {
+            SignInScreen(
+                onSignInClick = {
+                    navController.navigate(Routes.Home.route) {
+                        popUpTo(Routes.SignIn.route) { inclusive = true }
+                    }
+                },
+                onSignUpClick = { navController.navigate(Routes.SignUp.route) },
+                onForgotPasswordClick = { navController.navigate(Routes.ForgotPassword.route) }
+            )
+        }
+        composable(Routes.SignUp.route) {
+            SignUpScreen(
+                onSignUp = {
+                    navController.navigate(Routes.Home.route) {
+                        popUpTo(Routes.SignUp.route) { inclusive = true }
+                    }
+                },
+                onBackToSignIn = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.ForgotPassword.route) {
+            ForgotPasswordScreen(
+                onSubmit = { email ->
+                    navController.navigate(Routes.ResetPassword.createRoute("dummyToken")) {
+                        popUpTo(Routes.ForgotPassword.route) { inclusive = true }
+                    }
+                },
+                onBackToSignIn = { navController.popBackStack() }
             )
         }
     }

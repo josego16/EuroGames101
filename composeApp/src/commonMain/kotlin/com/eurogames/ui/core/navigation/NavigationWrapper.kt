@@ -25,6 +25,7 @@ import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Profile
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Ranking
 import com.eurogames.ui.core.navigation.navdrawable.DrawerHeader
 import com.eurogames.ui.core.navigation.navdrawable.NavigationDrawerWrapper
+import com.eurogames.ui.screens.user.auth.ForgotPasswordScreen
 import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
 import kotlinx.coroutines.launch
@@ -53,6 +54,16 @@ fun NavigationWrapper() {
             SignUpScreen(
                 onSignUp = {
                     mainNavController.navigate(Routes.Home.route) {
+                        popUpTo(Routes.SignIn.route) { inclusive = true }
+                    }
+                },
+                onBackToSignIn = { mainNavController.popBackStack() }
+            )
+        }
+        composable(Routes.ForgotPassword.route) {
+            ForgotPasswordScreen(
+                onSubmit = {
+                    mainNavController.navigate(Routes.ForgotPassword.route) {
                         popUpTo(Routes.SignIn.route) { inclusive = true }
                     }
                 },

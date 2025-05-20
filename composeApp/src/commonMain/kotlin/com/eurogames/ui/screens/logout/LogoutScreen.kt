@@ -16,7 +16,7 @@ fun LogoutScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         delay(100)
         navController.navigate(Routes.SignIn.route) {
-            popUpTo(0) { inclusive = true }
+            popUpTo(navController.graph.startDestinationId) { inclusive = true }
         }
     }
     Box(
