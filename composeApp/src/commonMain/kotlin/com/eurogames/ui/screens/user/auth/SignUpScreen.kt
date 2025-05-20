@@ -1,7 +1,11 @@
 package com.eurogames.ui.screens.user.auth
 
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.Email
+import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.eurogames.domain.models.user.auth.SignUpFormData
 import com.eurogames.ui.screens.user.auth.components.AuthButton
+import com.eurogames.ui.screens.user.auth.components.AuthLabeledText
 import com.eurogames.ui.screens.user.auth.components.AuthScreenContainer
 import com.eurogames.ui.screens.user.auth.components.AuthTextField
 
@@ -23,47 +28,91 @@ fun SignUpScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    AuthScreenContainer(title = "Crear cuenta") {
+    var fullNameError by remember { mutableStateOf("") }
+    var usernameError by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf("") }
+    var confirmPasswordError by remember { mutableStateOf("") }
+
+    AuthScreenContainer(title = "Sign Up") {
         AuthTextField(
-            label = "Nombre",
+            label = "Full Name",
             value = fullName,
-            onValueChange = { fullName = it }
+            onValueChange = {
+                fullName = it
+                fullNameError = if (it.length < 3) "Full Name must be at least 3 characters" else ""
+            },
+            error = fullNameError,
+            leadingIcon = { Icon(Icons.Rounded.Person, contentDescription = "Full Name") }
         )
-
         AuthTextField(
-            label = "Nombre de usuario",
+            label = "Username",
             value = username,
-            onValueChange = { username = it }
+            onValueChange = {
+                username = it
+                usernameError = if (it.length < 3) "Username must be at least 3 characters" else ""
+            },
+            error = usernameError,
+            leadingIcon = { Icon(Icons.Rounded.AccountCircle, contentDescription = "Username") }
         )
-
         AuthTextField(
-            label = "Correo electrónico",
+            label = "Email",
             value = email,
-            onValueChange = { email = it }
+            onValueChange = {
+                email = it
+                emailError = if (!it.contains("@") || !it.contains(".")) "Invalid email format" else ""
+            },
+            error = emailError,
+            leadingIcon = { Icon(Icons.Rounded.Email, contentDescription = "Email") }
         )
-
         AuthTextField(
-            label = "Contraseña",
+            label = "Password",
             value = password,
-            onValueChange = { password = it },
-            isPassword = true
+            onValueChange = {
+                password = it
+                passwordError = if (it.length < 6) "Password must be at least 6 characters" else ""
+            },
+            error = passwordError,
+            isPassword = true,
+            leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = "Password") }
         )
-
         AuthTextField(
-            label = "Confirmar contraseña",
+            label = "Confirm Password",
             value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            isPassword = true
+            onValueChange = {
+                confirmPassword = it
+                confirmPasswordError = if (it != password) "Passwords do not match" else ""
+            },
+            error = confirmPasswordError,
+            isPassword = true,
+            leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = "Confirm Password") }
         )
+        AuthButton(
+            text = "Sign Up",
+            onClick = {
+                fullNameError = if (fullName.isBlank() || fullName.length < 3) "Full Name must be at least 3 characters" else ""
+                usernameError = if (username.isBlank() || username.length < 3) "Username must be at least 3 characters" else ""
+                emailError = if (email.isBlank() || !email.contains("@") || !email.contains(".")) "Invalid email format" else ""
+                passwordError = if (password.isBlank() || password.length < 6) "Password must be at least 6 characters" else ""
+                confirmPasswordError = when {
+                    confirmPassword.isBlank() -> "Confirm password is required"
+                    confirmPassword != password -> "Passwords do not match"
+                    else -> ""
+                }
 
-        AuthButton(text = "Registrarse") {
-            onSignUp(
-                SignUpFormData(fullName, username, email, password, confirmPassword)
-            )
-        }
-
-        TextButton(onClick = onBackToSignIn) {
-            Text("¿Ya tienes cuenta? Inicia sesión")
-        }
+                if (listOf(
+                        fullNameError,
+                        usernameError,
+                        emailError,
+                        passwordError,
+                        confirmPasswordError
+                    ).all { it.isEmpty() }
+                ) {
+                    onSignUp(SignUpFormData(fullName, username, email, password, confirmPassword))
+                }
+            }
+        )
+        AuthLabeledText("Already have an account?", "Sign in now!", onClick = onBackToSignIn)
     }
 }
+

@@ -1,17 +1,28 @@
 package com.eurogames.ui.screens.logout
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
+import com.eurogames.ui.core.navigation.Routes
+import kotlinx.coroutines.delay
 
 @Composable
-fun LogoutScreen() {
+fun LogoutScreen(navController: NavController) {
+    LaunchedEffect(Unit) {
+        delay(100)
+        navController.navigate(Routes.SignIn.route) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
     Box(
-        modifier = Modifier.fillMaxSize().background(Color.Green),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-    ){}
+    ) {
+        CircularProgressIndicator()
+    }
 }

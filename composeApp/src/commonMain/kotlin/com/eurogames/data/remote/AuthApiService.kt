@@ -24,4 +24,18 @@ class AuthApiService(private val client: HttpClient) {
             setBody(request)
         }.body()
     }
+
+    suspend fun forgotPassword(email: String): Boolean {
+        return client.post("/auth/forgot-password") {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("email" to email))
+        }.status.value == 200
+    }
+
+    suspend fun resetPassword(token: String, newPassword: String): Boolean {
+        return client.post("/auth/reset-password") {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("token" to token, "newPassword" to newPassword))
+        }.status.value == 200
+    }
 }
