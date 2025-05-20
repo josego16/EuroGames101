@@ -8,7 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.eurogames.ui.core.navigation.Routes
+import com.eurogames.ui.core.navigation.utils.Routes
 import kotlinx.coroutines.delay
 
 @Composable

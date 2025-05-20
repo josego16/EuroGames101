@@ -1,4 +1,4 @@
-package com.eurogames.ui.core.navigation
+package com.eurogames.ui.core.navigation.utils
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
@@ -25,7 +25,6 @@ import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Profile
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Ranking
 import com.eurogames.ui.core.navigation.navdrawable.DrawerHeader
 import com.eurogames.ui.core.navigation.navdrawable.NavigationDrawerWrapper
-import com.eurogames.ui.screens.user.auth.ForgotPasswordScreen
 import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
 import kotlinx.coroutines.launch
@@ -40,35 +39,28 @@ fun NavigationWrapper() {
     ) {
         composable(Routes.SignIn.route) {
             SignInScreen(
-                onSignInClick = {
+                onSignUpClick = { mainNavController.navigate(Routes.SignUp.route) },
+                onLoginSuccess = {
                     mainNavController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.SignIn.route) { inclusive = true }
+                        popUpTo(Routes.SignIn.route) {
+                            inclusive = true
+                        }
                     }
                 },
-                onSignUpClick = { mainNavController.navigate(Routes.SignUp.route) },
-                onForgotPasswordClick = { mainNavController.navigate(Routes.ForgotPassword.route) }
+                onForgotPassword = {
+                    mainNavController.navigate(Routes.ForgotPassword.route)
+                }
             )
         }
 
         composable(Routes.SignUp.route) {
             SignUpScreen(
-                onSignUp = {
-                    mainNavController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.SignIn.route) { inclusive = true }
-                    }
-                },
                 onBackToSignIn = { mainNavController.popBackStack() }
             )
         }
+
         composable(Routes.ForgotPassword.route) {
-            ForgotPasswordScreen(
-                onSubmit = {
-                    mainNavController.navigate(Routes.ForgotPassword.route) {
-                        popUpTo(Routes.SignIn.route) { inclusive = true }
-                    }
-                },
-                onBackToSignIn = { mainNavController.popBackStack() }
-            )
+            com.eurogames.ui.screens.user.auth.ForgotPasswordScreen()
         }
 
         composable(Routes.Home.route) {

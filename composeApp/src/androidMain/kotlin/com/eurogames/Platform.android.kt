@@ -11,7 +11,7 @@ actual fun getBaseUrl(): String {
     return if (isEmulator()) {
         "http://10.0.2.2:8081"
     } else {
-        "http://192.168.10.143:8081"
+        "http://192.168.0.25:8081"
     }
 }
 

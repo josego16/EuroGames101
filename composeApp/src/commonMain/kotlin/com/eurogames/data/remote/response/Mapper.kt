@@ -7,7 +7,7 @@ fun UserResponseDto.toDomain(): User {
         id = id,
         fullName = fullName,
         username = username,
-        password = password,
+        password = "",
         email = email,
         avatar = avatar
     )

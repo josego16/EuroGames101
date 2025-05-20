@@ -1,54 +1,79 @@
 package com.eurogames.data.repository
 
 import com.eurogames.data.remote.AuthApiService
+import com.eurogames.data.remote.response.ForgotPasswordDto
+import com.eurogames.data.remote.response.ForgotPasswordResponseDto
 import com.eurogames.data.remote.response.SignInDto
 import com.eurogames.data.remote.response.SignUpDto
+import com.eurogames.data.remote.response.SignUpResponseDto
 import com.eurogames.data.remote.response.toDomain
 import com.eurogames.domain.models.user.User
+import com.eurogames.domain.models.user.auth.AuthResult
 import com.eurogames.domain.repository.AuthRepository
-import io.ktor.client.plugins.logging.Logger
+import com.eurogames.domain.repository.TokenStore
+import com.eurogames.util.Result
 
-class AuthRepositoryImpl(private val apiService: AuthApiService, private val logger: Logger) :
-    AuthRepository {
-    override suspend fun signIn(username: String, password: String): User? {
-        return runCatching {
-            val response = apiService.login(SignInDto(username, password))
-            response.user.toDomain()
-        }.onFailure { exception ->
-            logger.log("Error during signIn: ${exception.message}")
-        }.getOrNull()
-    }
+class AuthRepositoryImpl(
+    private val apiService: AuthApiService,
+    private val tokenStore: TokenStore
+) : AuthRepository {
 
-    override suspend fun signUp(user: User): User? {
-        return runCatching {
-            val response = apiService.register(
-                SignUpDto(
-                    fullName = user.fullName,
-                    username = user.username,
-                    email = user.email,
-                    password = user.password,
-                    avatar = user.avatar
+    override suspend fun signIn(username: String, password: String): Result<AuthResult> {
+        return when (val response = apiService.signIn(SignInDto(username, password))) {
+            is Result.Success -> {
+                val authResult = AuthResult(
+                    user = response.data.user.toDomain(),
+                    token = response.data.token
                 )
+                tokenStore.saveToken(response.data.token)
+                Result.Success(authResult)
+            }
+
+            is Result.Error -> {
+                Result.Error(
+                    message = response.message,
+                    cause = response.cause,
+                    type = response.type
+                )
+            }
+        }
+    }
+
+    override suspend fun signUp(user: User): Result<User> {
+        return when (val response = apiService.signUp(
+            SignUpDto(
+                fullName = user.fullName,
+                username = user.username,
+                email = user.email,
+                password = user.password,
+                avatar = user.avatar
             )
-            response.user.toDomain()
-        }.onFailure { exception ->
-            logger.log("Error during signUp: ${exception.message}")
-        }.getOrNull()
+        )) {
+            is Result.Success -> {
+                val dto: SignUpResponseDto = response.data
+                Result.Success(
+                    User(
+                        id = dto.id,
+                        fullName = dto.fullName,
+                        username = dto.username,
+                        password = "",
+                        email = dto.email,
+                        avatar = dto.avatar
+                    )
+                )
+            }
+
+            is Result.Error -> {
+                Result.Error(
+                    message = response.message,
+                    cause = response.cause,
+                    type = response.type
+                )
+            }
+        }
     }
 
-    override suspend fun forgotPassword(email: String): Boolean {
-        return runCatching {
-            apiService.forgotPassword(email)
-        }.onFailure { exception ->
-            logger.log("Error during forgotPassword: ${exception.message}")
-        }.getOrDefault(false)
-    }
-
-    override suspend fun resetPassword(token: String, newPassword: String): Boolean {
-        return runCatching {
-            apiService.resetPassword(token, newPassword)
-        }.onFailure { exception ->
-            logger.log("Error during resetPassword: ${exception.message}")
-        }.getOrDefault(false)
+    override suspend fun forgotPassword(email: String): Result<ForgotPasswordResponseDto> {
+        return apiService.forgotPassword(ForgotPasswordDto(email))
     }
 }

@@ -6,13 +6,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.eurogames.ui.core.navigation.Routes
+import com.eurogames.ui.core.navigation.utils.Routes
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
 import com.eurogames.ui.screens.logout.LogoutScreen
 import com.eurogames.ui.screens.play.PlayScreen
 import com.eurogames.ui.screens.ranking.RankingScreen
-import com.eurogames.ui.screens.user.auth.ForgotPasswordScreen
 import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
 import com.eurogames.ui.screens.user.profile.ProfileScreen
@@ -67,34 +66,21 @@ fun NavigationDrawerWrapper(
         }
         composable(Routes.SignIn.route) {
             SignInScreen(
-                onSignInClick = {
+                onSignUpClick = { navController.navigate(Routes.SignUp.route) },
+                onLoginSuccess = {
                     navController.navigate(Routes.Home.route) {
                         popUpTo(Routes.SignIn.route) { inclusive = true }
                     }
-                },
-                onSignUpClick = { navController.navigate(Routes.SignUp.route) },
-                onForgotPasswordClick = { navController.navigate(Routes.ForgotPassword.route) }
+                }, onForgotPassword = { navController.navigate(Routes.ForgotPassword.route) }
             )
         }
         composable(Routes.SignUp.route) {
             SignUpScreen(
-                onSignUp = {
-                    navController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.SignUp.route) { inclusive = true }
-                    }
-                },
                 onBackToSignIn = { navController.popBackStack() }
             )
         }
         composable(Routes.ForgotPassword.route) {
-            ForgotPasswordScreen(
-                onSubmit = { email ->
-                    navController.navigate(Routes.ResetPassword.createRoute("dummyToken")) {
-                        popUpTo(Routes.ForgotPassword.route) { inclusive = true }
-                    }
-                },
-                onBackToSignIn = { navController.popBackStack() }
-            )
+            com.eurogames.ui.screens.user.auth.ForgotPasswordScreen()
         }
     }
 }

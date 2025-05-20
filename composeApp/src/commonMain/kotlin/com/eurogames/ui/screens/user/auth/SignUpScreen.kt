@@ -1,5 +1,7 @@
 package com.eurogames.ui.screens.user.auth
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Email
@@ -11,17 +13,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.eurogames.domain.models.user.auth.SignUpFormData
 import com.eurogames.ui.screens.user.auth.components.AuthButton
 import com.eurogames.ui.screens.user.auth.components.AuthLabeledText
 import com.eurogames.ui.screens.user.auth.components.AuthScreenContainer
 import com.eurogames.ui.screens.user.auth.components.AuthTextField
+import com.eurogames.ui.viewmodels.SignUpViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SignUpScreen(
-    onSignUp: (SignUpFormData) -> Unit,
-    onBackToSignIn: () -> Unit
-) {
+fun SignUpScreen(onBackToSignIn: () -> Unit) {
+    val viewmodel = koinViewModel<SignUpViewModel>()
+
     var fullName by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -60,7 +65,8 @@ fun SignUpScreen(
             value = email,
             onValueChange = {
                 email = it
-                emailError = if (!it.contains("@") || !it.contains(".")) "Invalid email format" else ""
+                emailError =
+                    if (!it.contains("@") || !it.contains(".")) "Invalid email format" else ""
             },
             error = emailError,
             leadingIcon = { Icon(Icons.Rounded.Email, contentDescription = "Email") }
@@ -90,10 +96,14 @@ fun SignUpScreen(
         AuthButton(
             text = "Sign Up",
             onClick = {
-                fullNameError = if (fullName.isBlank() || fullName.length < 3) "Full Name must be at least 3 characters" else ""
-                usernameError = if (username.isBlank() || username.length < 3) "Username must be at least 3 characters" else ""
-                emailError = if (email.isBlank() || !email.contains("@") || !email.contains(".")) "Invalid email format" else ""
-                passwordError = if (password.isBlank() || password.length < 6) "Password must be at least 6 characters" else ""
+                fullNameError =
+                    if (fullName.isBlank() || fullName.length < 3) "Full Name must be at least 3 characters" else ""
+                usernameError =
+                    if (username.isBlank() || username.length < 3) "Username must be at least 3 characters" else ""
+                emailError =
+                    if (email.isBlank() || !email.contains("@") || !email.contains(".")) "Invalid email format" else ""
+                passwordError =
+                    if (password.isBlank() || password.length < 6) "Password must be at least 6 characters" else ""
                 confirmPasswordError = when {
                     confirmPassword.isBlank() -> "Confirm password is required"
                     confirmPassword != password -> "Passwords do not match"
@@ -108,11 +118,20 @@ fun SignUpScreen(
                         confirmPasswordError
                     ).all { it.isEmpty() }
                 ) {
-                    onSignUp(SignUpFormData(fullName, username, email, password, confirmPassword))
+                    viewmodel.signUp(
+                        SignUpFormData(
+                            fullName,
+                            username,
+                            email,
+                            password,
+                            confirmPassword
+                        )
+                    )
                 }
             }
         )
         AuthLabeledText("Already have an account?", "Sign in now!", onClick = onBackToSignIn)
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 

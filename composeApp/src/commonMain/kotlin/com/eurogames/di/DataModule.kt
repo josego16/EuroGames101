@@ -2,14 +2,14 @@ package com.eurogames.di
 
 import com.eurogames.data.remote.AuthApiService
 import com.eurogames.data.repository.AuthRepositoryImpl
+import com.eurogames.data.repository.TokenStoreRepositoryImpl
 import com.eurogames.domain.repository.AuthRepository
+import com.eurogames.domain.repository.TokenStore
 import com.eurogames.getBaseUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
@@ -42,5 +42,6 @@ val dataModule = module {
     }
 
     factoryOf(::AuthApiService)
-    factory<AuthRepository> { AuthRepositoryImpl(get(), Logger.DEFAULT) }
+    factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStore = get()) }
+    factory<TokenStore> { TokenStoreRepositoryImpl() }
 }

@@ -11,9 +11,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.eurogames.ui.core.navigation.Routes
 import com.eurogames.ui.core.navigation.navbottom.BottomBarItem.GuessTheFlag
 import com.eurogames.ui.core.navigation.navbottom.BottomBarItem.Quiz
+import com.eurogames.ui.core.navigation.utils.Routes
 import com.eurogames.ui.screens.play.GuessTheFlagScreen
 import com.eurogames.ui.screens.play.QuizScreen
 

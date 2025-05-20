@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import com.eurogames.ui.core.navigation.Routes
+import com.eurogames.ui.core.navigation.utils.Routes
 
 sealed class BottomBarItem {
     abstract val route: String
