@@ -9,10 +9,17 @@ import com.eurogames.data.repository.QuestionsRepositoryimpl
 import com.eurogames.domain.repository.GameRepository
 import com.eurogames.domain.repository.GameSessionRepository
 import com.eurogames.domain.repository.QuestionDetailsRepository
+import com.eurogames.data.remote.AuthApiService
+import com.eurogames.data.repository.AuthRepositoryImpl
+import com.eurogames.data.repository.TokenStoreRepositoryImpl
+import com.eurogames.domain.repository.AuthRepository
+import com.eurogames.domain.repository.TokenStore
 import com.eurogames.getBaseUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
@@ -37,6 +44,9 @@ val dataModule = module {
                     port = parsedUrl.port
                 }
             }
+            install(Logging) {
+                level = LogLevel.ALL
+            }
         }
     }
 
@@ -47,4 +57,8 @@ val dataModule = module {
     factory<QuestionDetailsRepository> { QuestionsRepositoryimpl(get()) }
     factory<GameRepository> { GameRepositoryImpl(get()) }
     factory<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
+
+    factoryOf(::AuthApiService)
+    factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStore = get()) }
+    factory<TokenStore> { TokenStoreRepositoryImpl() }
 }

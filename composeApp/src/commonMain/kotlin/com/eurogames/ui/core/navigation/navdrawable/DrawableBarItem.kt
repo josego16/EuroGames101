@@ -8,7 +8,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Scoreboard
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import com.eurogames.ui.core.navigation.Routes
+import com.eurogames.ui.core.navigation.utils.Routes
 
 sealed class DrawableBarItem {
     abstract val route: String

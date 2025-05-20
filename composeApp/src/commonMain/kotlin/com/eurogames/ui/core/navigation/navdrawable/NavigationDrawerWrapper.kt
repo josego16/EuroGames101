@@ -6,13 +6,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.eurogames.ui.core.navigation.Routes
+import com.eurogames.ui.core.navigation.utils.Routes
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
 import com.eurogames.ui.screens.logout.LogoutScreen
 import com.eurogames.ui.screens.play.PlayScreen
-import com.eurogames.ui.screens.profile.ProfileScreen
 import com.eurogames.ui.screens.ranking.RankingScreen
+import com.eurogames.ui.screens.user.auth.SignInScreen
+import com.eurogames.ui.screens.user.auth.SignUpScreen
+import com.eurogames.ui.screens.user.profile.ProfileScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -27,9 +29,7 @@ fun NavigationDrawerWrapper(
             MainScreen(
                 screenTitle = "Home",
                 screenContent = { HomeScreen() },
-                onDrawerClick = {
-                    scope.launch { drawerState.open() }
-                }
+                onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }
         composable(Routes.Play.route) {
@@ -56,9 +56,31 @@ fun NavigationDrawerWrapper(
         composable(Routes.Logout.route) {
             MainScreen(
                 screenTitle = "Logout",
-                screenContent = { LogoutScreen() },
+                screenContent = {
+                    LogoutScreen(
+                        navController = navController,
+                    )
+                },
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
+        }
+        composable(Routes.SignIn.route) {
+            SignInScreen(
+                onSignUpClick = { navController.navigate(Routes.SignUp.route) },
+                onLoginSuccess = {
+                    navController.navigate(Routes.Home.route) {
+                        popUpTo(Routes.SignIn.route) { inclusive = true }
+                    }
+                }, onForgotPassword = { navController.navigate(Routes.ForgotPassword.route) }
+            )
+        }
+        composable(Routes.SignUp.route) {
+            SignUpScreen(
+                onBackToSignIn = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.ForgotPassword.route) {
+            com.eurogames.ui.screens.user.auth.ForgotPasswordScreen()
         }
     }
 }

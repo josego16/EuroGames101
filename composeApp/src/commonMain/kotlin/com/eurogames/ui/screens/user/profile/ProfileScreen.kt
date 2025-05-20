@@ -1,4 +1,4 @@
-package com.eurogames.ui.screens.profile
+package com.eurogames.ui.screens.user.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
