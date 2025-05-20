@@ -20,6 +20,7 @@ import com.eurogames.ui.screens.user.auth.components.AuthLabeledText
 import com.eurogames.ui.screens.user.auth.components.AuthScreenContainer
 import com.eurogames.ui.screens.user.auth.components.AuthTextField
 import com.eurogames.ui.viewmodels.SignInViewModel
+import com.eurogames.util.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -28,62 +29,64 @@ fun SignInScreen(
     onLoginSuccess: () -> Unit,
     onForgotPassword: () -> Unit
 ) {
-    val viewmodel = koinViewModel<SignInViewModel>()
-    val state by viewmodel.state.collectAsState()
+    AppTheme(country = "france") {
+        val viewmodel = koinViewModel<SignInViewModel>()
+        val state by viewmodel.state.collectAsState()
 
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var usernameError by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf("") }
+        var username by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
+        var usernameError by remember { mutableStateOf("") }
+        var passwordError by remember { mutableStateOf("") }
 
-    LaunchedEffect(state.user) {
-        if (state.user != null && state.error == null) {
-            onLoginSuccess()
-        }
-    }
-
-    AuthScreenContainer(title = "Sign In") {
-        AuthTextField(
-            label = "Username",
-            value = username,
-            onValueChange = {
-                username = it
-                usernameError = if (it.length < 3) "Username must be at least 3 characters" else ""
-            },
-            error = usernameError,
-            leadingIcon = { Icon(Icons.Rounded.AccountCircle, contentDescription = "Username") }
-        )
-        AuthTextField(
-            label = "Password",
-            value = password,
-            onValueChange = {
-                password = it
-                passwordError = if (it.length < 6) "Password must be at least 6 characters" else ""
-            },
-            error = passwordError,
-            isPassword = true,
-            leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = "Password") }
-        )
-        AuthButton(
-            text = "Sign In",
-            onClick = {
-                usernameError =
-                    if (username.isBlank() || username.length < 3) "Username must be at least 3 characters" else ""
-                passwordError =
-                    if (password.isBlank() || password.length < 6) "Password must be at least 6 characters" else ""
-
-                if (usernameError.isEmpty() && passwordError.isEmpty()) {
-                    viewmodel.signIn(username, password)
-                }
+        LaunchedEffect(state.user) {
+            if (state.user != null && state.error == null) {
+                onLoginSuccess()
             }
-        )
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        AuthLabeledText("Forgot your password?", "Reset it here!", onClick = onForgotPassword)
+        AuthScreenContainer(title = "Sign In") {
+            AuthTextField(
+                label = "Username",
+                value = username,
+                onValueChange = {
+                    username = it
+                    usernameError = if (it.length < 3) "Username must be at least 3 characters" else ""
+                },
+                error = usernameError,
+                leadingIcon = { Icon(Icons.Rounded.AccountCircle, contentDescription = "Username") }
+            )
+            AuthTextField(
+                label = "Password",
+                value = password,
+                onValueChange = {
+                    password = it
+                    passwordError = if (it.length < 6) "Password must be at least 6 characters" else ""
+                },
+                error = passwordError,
+                isPassword = true,
+                leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = "Password") }
+            )
+            AuthButton(
+                text = "Sign In",
+                onClick = {
+                    usernameError =
+                        if (username.isBlank() || username.length < 3) "Username must be at least 3 characters" else ""
+                    passwordError =
+                        if (password.isBlank() || password.length < 6) "Password must be at least 6 characters" else ""
 
-        Spacer(modifier = Modifier.height(8.dp))
-        AuthLabeledText("Don't have an account?", "Sign up now!", onClick = onSignUpClick)
+                    if (usernameError.isEmpty() && passwordError.isEmpty()) {
+                        viewmodel.signIn(username, password)
+                    }
+                }
+            )
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            AuthLabeledText("Forgot your password?", "Reset it here!", onClick = onForgotPassword)
+
+            Spacer(modifier = Modifier.height(8.dp))
+            AuthLabeledText("Don't have an account?", "Sign up now!", onClick = onSignUpClick)
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
     }
 }

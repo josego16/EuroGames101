@@ -6,12 +6,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.eurogames.util.AppTheme
+import com.eurogames.util.CountryBlue
 
 @Composable
 fun RankingScreen() {
-    Box(
-        Modifier.fillMaxSize().background(Color.Blue),
-        contentAlignment = Alignment.Center
-    ) {}
+    AppTheme(country = "france") {
+        Box(
+            Modifier.fillMaxSize().background(CountryBlue),
+            contentAlignment = Alignment.Center
+        ) {
+            // Aquí va el contenido del ranking
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.eurogames.domain.enums.Difficulty
 import com.eurogames.domain.enums.QuestionType
 import com.eurogames.domain.enums.ResponseMode
 import com.eurogames.domain.util.UUIDSerializer
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class QuestionResponseDto(

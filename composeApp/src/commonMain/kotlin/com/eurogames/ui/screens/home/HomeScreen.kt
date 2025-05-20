@@ -6,12 +6,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.eurogames.util.AppTheme
+import com.eurogames.util.CountryYellow
 
 @Composable
 fun HomeScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.White),
-        contentAlignment = Alignment.Center
-    ){}
+    AppTheme(country = "spain") {
+        Box(
+            modifier = Modifier.fillMaxSize().background(CountryYellow),
+            contentAlignment = Alignment.Center
+        ) {
+            // Aquí va el contenido del home
+        }
+    }
 }

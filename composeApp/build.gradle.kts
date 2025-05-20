@@ -65,6 +65,8 @@ kotlin {
 
             implementation(libs.uuid)
             implementation(libs.kotlinx.datetime)
+
+            implementation(libs.materialKolor)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

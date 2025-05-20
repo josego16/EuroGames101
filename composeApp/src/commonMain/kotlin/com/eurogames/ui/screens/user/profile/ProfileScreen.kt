@@ -6,12 +6,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.eurogames.util.AppTheme
+import com.eurogames.util.CountryGreen
 
 @Composable
 fun ProfileScreen() {
-    Box(
-        Modifier.fillMaxSize().background(Color.Black),
-        contentAlignment = Alignment.Center
-    ) {}
+    AppTheme(country = "italy") {
+        Box(
+            Modifier.fillMaxSize().background(CountryGreen),
+            contentAlignment = Alignment.Center
+        ) {
+            // Aquí va el contenido del perfil
+        }
+    }
 }
