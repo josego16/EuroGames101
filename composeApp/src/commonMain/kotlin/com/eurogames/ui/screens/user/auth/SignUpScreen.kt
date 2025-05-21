@@ -9,6 +9,8 @@ import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SignUpScreen(onBackToSignIn: () -> Unit) {
     AppTheme(country = "spain") {
         val viewmodel = koinViewModel<SignUpViewModel>()
+        val state by viewmodel.state.collectAsState()
 
         var fullName by remember { mutableStateOf("") }
         var username by remember { mutableStateOf("") }
@@ -137,6 +140,12 @@ fun SignUpScreen(onBackToSignIn: () -> Unit) {
             )
             AuthLabeledText("Already have an account?", "Sign in now!", onClick = onBackToSignIn)
             Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        LaunchedEffect(state.isSuccess) {
+            if (state.isSuccess) {
+                onBackToSignIn()
+            }
         }
     }
 }
