@@ -1,6 +1,6 @@
 package com.eurogames.ui.state
 
-import com.eurogames.domain.models.user.auth.AuthResult
+import com.eurogames.domain.model.auth.AuthResult
 
 data class SignInState(
     val user: AuthResult? = null,

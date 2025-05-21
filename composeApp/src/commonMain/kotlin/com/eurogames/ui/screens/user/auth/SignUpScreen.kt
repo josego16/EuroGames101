@@ -17,18 +17,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.eurogames.domain.models.user.auth.SignUpFormData
+import com.eurogames.domain.model.auth.SignUpFormData
+import com.eurogames.ui.core.navigation.utils.AppTheme
 import com.eurogames.ui.screens.user.auth.components.AuthButton
 import com.eurogames.ui.screens.user.auth.components.AuthLabeledText
 import com.eurogames.ui.screens.user.auth.components.AuthScreenContainer
 import com.eurogames.ui.screens.user.auth.components.AuthTextField
-import com.eurogames.ui.viewmodels.SignUpViewModel
-import com.eurogames.util.AppTheme
+import com.eurogames.ui.viewmodels.auth.SignUpViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SignUpScreen(onBackToSignIn: () -> Unit) {
-    AppTheme(country = "spain") {
+    AppTheme {
         val viewmodel = koinViewModel<SignUpViewModel>()
         val state by viewmodel.state.collectAsState()
 

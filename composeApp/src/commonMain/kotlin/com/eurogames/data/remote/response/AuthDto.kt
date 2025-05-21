@@ -28,3 +28,19 @@ data class SignUpResponseDto(
     val email: String,
     val avatar: String? = null
 )
+
+@Serializable
+data class AuthResponseDto(
+    val user: UserResponseDto,
+    val token: String
+)
+
+@Serializable
+data class ForgotPasswordDto(
+    val email: String
+)
+
+@Serializable
+data class ForgotPasswordResponseDto(
+    val message: String? = null
+)

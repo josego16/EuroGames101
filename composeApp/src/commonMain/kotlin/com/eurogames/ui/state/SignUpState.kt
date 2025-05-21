@@ -1,6 +1,6 @@
 package com.eurogames.ui.state
 
-import com.eurogames.domain.models.user.auth.SignUpFormData
+import com.eurogames.domain.model.auth.SignUpFormData
 
 data class SignUpState(
     val user: SignUpFormData? = null,

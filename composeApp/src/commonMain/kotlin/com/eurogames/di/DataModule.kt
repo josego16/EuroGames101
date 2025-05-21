@@ -1,19 +1,13 @@
 package com.eurogames.di
 
-import com.eurogames.data.remote.apiservice.GameApiService
-import com.eurogames.data.remote.apiservice.GameSessionApiService
-import com.eurogames.data.remote.apiservice.QuestionDetailsApiService
-import com.eurogames.data.repository.GameRepositoryImpl
-import com.eurogames.data.repository.GameSessionRepositoryImpl
-import com.eurogames.data.repository.QuestionsRepositoryimpl
-import com.eurogames.domain.repository.GameRepository
-import com.eurogames.domain.repository.GameSessionRepository
-import com.eurogames.domain.repository.QuestionDetailsRepository
-import com.eurogames.data.remote.AuthApiService
+import com.eurogames.data.remote.apiservice.AuthApiService
+import com.eurogames.data.remote.apiservice.CountryApiService
 import com.eurogames.data.repository.AuthRepositoryImpl
+import com.eurogames.data.repository.CountryRepositoryImpl
 import com.eurogames.data.repository.TokenStoreRepositoryImpl
 import com.eurogames.domain.repository.AuthRepository
-import com.eurogames.domain.repository.TokenStore
+import com.eurogames.domain.repository.CountryRepository
+import com.eurogames.domain.repository.TokenStoreRepository
 import com.eurogames.getBaseUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
@@ -50,15 +44,10 @@ val dataModule = module {
         }
     }
 
-    factoryOf(::GameApiService)
-    factoryOf(::GameSessionApiService)
-    factoryOf(::QuestionDetailsApiService)
-
-    factory<QuestionDetailsRepository> { QuestionsRepositoryimpl(get()) }
-    factory<GameRepository> { GameRepositoryImpl(get()) }
-    factory<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
-
     factoryOf(::AuthApiService)
-    factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStore = get()) }
-    factory<TokenStore> { TokenStoreRepositoryImpl() }
+    factoryOf(::CountryApiService)
+
+    factory<CountryRepository> { CountryRepositoryImpl(get()) }
+    factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStoreRepository = get()) }
+    factory<TokenStoreRepository> { TokenStoreRepositoryImpl() }
 }

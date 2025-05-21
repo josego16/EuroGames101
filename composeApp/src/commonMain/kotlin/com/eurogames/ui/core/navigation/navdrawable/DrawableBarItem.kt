@@ -2,13 +2,13 @@ package com.eurogames.ui.core.navigation.navdrawable
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Scoreboard
+import androidx.compose.material.icons.sharp.Flag
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import com.eurogames.ui.core.navigation.utils.Routes
+import com.eurogames.ui.core.navigation.Routes
 
 sealed class DrawableBarItem {
     abstract val route: String
@@ -24,19 +24,19 @@ sealed class DrawableBarItem {
 
     ) : DrawableBarItem()
 
-    data class Play(
-        override val route: String = Routes.Play.route,
-        override val title: String = "Play",
+    data class Country(
+        override val route: String = Routes.Country.route,
+        override val title: String = "Country",
         override val icon: @Composable () -> Unit = {
-            Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play")
+            Icon(imageVector = Icons.Sharp.Flag, contentDescription = "Country")
         }
     ) : DrawableBarItem()
 
-    data class Ranking(
-        override val route: String = Routes.Ranking.route,
-        override val title: String = "Ranking",
+    data class CountryDetail(
+        override val route: String = Routes.CountryDetail.route,
+        override val title: String = "Country Detail",
         override val icon: @Composable () -> Unit = {
-            Icon(imageVector = Icons.Default.Scoreboard, contentDescription = "Ranking")
+            Icon(imageVector = Icons.Default.Details, contentDescription = "Country Detail")
         }
     ) : DrawableBarItem()
 

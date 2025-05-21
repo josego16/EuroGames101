@@ -15,12 +15,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.eurogames.ui.core.navigation.utils.AppTheme
 import com.eurogames.ui.screens.user.auth.components.AuthButton
 import com.eurogames.ui.screens.user.auth.components.AuthLabeledText
 import com.eurogames.ui.screens.user.auth.components.AuthScreenContainer
 import com.eurogames.ui.screens.user.auth.components.AuthTextField
-import com.eurogames.ui.viewmodels.SignInViewModel
-import com.eurogames.util.AppTheme
+import com.eurogames.ui.viewmodels.auth.SignInViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -29,7 +29,7 @@ fun SignInScreen(
     onLoginSuccess: () -> Unit,
     onForgotPassword: () -> Unit
 ) {
-    AppTheme(country = "france") {
+    AppTheme {
         val viewmodel = koinViewModel<SignInViewModel>()
         val state by viewmodel.state.collectAsState()
 

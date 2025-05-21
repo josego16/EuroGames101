@@ -1,8 +1,8 @@
 package com.eurogames.data.repository
 
-import com.eurogames.domain.repository.TokenStore
+import com.eurogames.domain.repository.TokenStoreRepository
 
-class TokenStoreRepositoryImpl : TokenStore {
+class TokenStoreRepositoryImpl : TokenStoreRepository {
     private var token: String? = null
 
     override fun saveToken(token: String) {

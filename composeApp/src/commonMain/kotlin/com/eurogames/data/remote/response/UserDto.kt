@@ -13,9 +13,3 @@ data class UserResponseDto(
     val email: String,
     val avatar: String? = null
 )
-
-@Serializable
-data class AuthResponseDto(
-    val user: UserResponseDto,
-    val token: String
-)

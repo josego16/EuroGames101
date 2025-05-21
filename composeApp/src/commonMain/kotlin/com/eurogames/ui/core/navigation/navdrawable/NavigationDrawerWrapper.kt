@@ -6,12 +6,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.eurogames.ui.core.navigation.utils.Routes
+import com.eurogames.ui.core.navigation.Routes
+import com.eurogames.ui.screens.country.CountryDetailsScreen
+import com.eurogames.ui.screens.country.CountryScreen
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
 import com.eurogames.ui.screens.logout.LogoutScreen
-import com.eurogames.ui.screens.play.PlayScreen
-import com.eurogames.ui.screens.ranking.RankingScreen
 import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
 import com.eurogames.ui.screens.user.profile.ProfileScreen
@@ -32,17 +32,17 @@ fun NavigationDrawerWrapper(
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }
-        composable(Routes.Play.route) {
+        composable(Routes.Country.route) {
             MainScreen(
-                screenTitle = "Play",
-                screenContent = { PlayScreen() },
+                screenTitle = "Country",
+                screenContent = { CountryScreen() },
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }
-        composable(Routes.Ranking.route) {
+        composable(Routes.CountryDetail.route) {
             MainScreen(
-                screenTitle = "Ranking",
-                screenContent = { RankingScreen() },
+                screenTitle = "Country Details",
+                screenContent = { CountryDetailsScreen() },
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }

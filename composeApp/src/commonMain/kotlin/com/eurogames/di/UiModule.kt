@@ -1,8 +1,8 @@
 package com.eurogames.di
 
-import com.eurogames.ui.viewmodels.ForgotPasswordViewModel
-import com.eurogames.ui.viewmodels.SignInViewModel
-import com.eurogames.ui.viewmodels.SignUpViewModel
+import com.eurogames.ui.viewmodels.auth.ForgotPasswordViewModel
+import com.eurogames.ui.viewmodels.auth.SignInViewModel
+import com.eurogames.ui.viewmodels.auth.SignUpViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 

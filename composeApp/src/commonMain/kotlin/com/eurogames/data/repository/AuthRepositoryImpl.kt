@@ -1,21 +1,21 @@
 package com.eurogames.data.repository
 
-import com.eurogames.data.remote.AuthApiService
+import com.eurogames.Result
+import com.eurogames.data.mappers.toDomain
+import com.eurogames.data.remote.apiservice.AuthApiService
 import com.eurogames.data.remote.response.ForgotPasswordDto
 import com.eurogames.data.remote.response.ForgotPasswordResponseDto
 import com.eurogames.data.remote.response.SignInDto
 import com.eurogames.data.remote.response.SignUpDto
 import com.eurogames.data.remote.response.SignUpResponseDto
-import com.eurogames.data.remote.response.toDomain
-import com.eurogames.domain.models.user.User
-import com.eurogames.domain.models.user.auth.AuthResult
+import com.eurogames.domain.model.User
+import com.eurogames.domain.model.auth.AuthResult
 import com.eurogames.domain.repository.AuthRepository
-import com.eurogames.domain.repository.TokenStore
-import com.eurogames.util.Result
+import com.eurogames.domain.repository.TokenStoreRepository
 
 class AuthRepositoryImpl(
     private val apiService: AuthApiService,
-    private val tokenStore: TokenStore
+    private val tokenStoreRepository: TokenStoreRepository
 ) : AuthRepository {
 
     override suspend fun signIn(username: String, password: String): Result<AuthResult> {
@@ -25,7 +25,7 @@ class AuthRepositoryImpl(
                     user = response.data.user.toDomain(),
                     token = response.data.token
                 )
-                tokenStore.saveToken(response.data.token)
+                tokenStoreRepository.saveToken(response.data.token)
                 Result.Success(authResult)
             }
 

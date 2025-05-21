@@ -1,4 +1,4 @@
-package com.eurogames.ui.screens.user.profile
+package com.eurogames.ui.screens.country
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,10 +10,10 @@ import com.eurogames.ui.core.navigation.utils.AppTheme
 import com.eurogames.ui.core.navigation.utils.SeedColor
 
 @Composable
-fun ProfileScreen() {
+fun CountryDetailsScreen() {
     AppTheme {
         Box(
-            Modifier.fillMaxSize().background(SeedColor),
+            modifier = Modifier.fillMaxSize().background(SeedColor),
             contentAlignment = Alignment.Center
         ) {
         }
