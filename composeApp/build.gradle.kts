@@ -67,6 +67,10 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.materialKolor)
+
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor2)
+            implementation(libs.coil.network.ktor3)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

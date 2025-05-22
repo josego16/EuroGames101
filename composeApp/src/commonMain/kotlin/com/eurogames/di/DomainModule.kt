@@ -8,6 +8,9 @@ import com.eurogames.domain.usecase.country.GetAllCountriesUseCase
 import com.eurogames.domain.usecase.country.GetCountryByIdUseCase
 import com.eurogames.domain.usecase.country.SearchCountriesUseCase
 import com.eurogames.domain.usecase.country.SortCountriesUseCase
+import com.eurogames.domain.usecase.profile.GetAllUsersUseCase
+import com.eurogames.domain.usecase.profile.GetUserByIdUseCase
+import com.eurogames.domain.usecase.profile.UpdateUserUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -15,6 +18,10 @@ val domainModule = module {
     factoryOf(::SignInUseCase)
     factoryOf(::SignUpUseCase)
     factoryOf(::ForgotPasswordUseCase)
+
+    factoryOf(::GetAllUsersUseCase)
+    factoryOf(::GetUserByIdUseCase)
+    factoryOf(::UpdateUserUseCase)
 
     factoryOf(::GetAllCountriesUseCase)
     factoryOf(::GetCountryByIdUseCase)

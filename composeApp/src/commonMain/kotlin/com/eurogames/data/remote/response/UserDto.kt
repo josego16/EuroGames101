@@ -13,3 +13,10 @@ data class UserResponseDto(
     val email: String,
     val avatar: String? = null
 )
+@Serializable
+data class UserUpdateDto(
+    val fullName: String,
+    val username: String,
+    val email: String,
+    val avatar: String? = null
+)

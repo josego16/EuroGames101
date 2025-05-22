@@ -1,11 +1,13 @@
 package com.eurogames.ui.core.navigation.navdrawable
 
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.eurogames.session.SessionManager
 import com.eurogames.ui.core.navigation.Routes
 import com.eurogames.ui.screens.country.CountryDetailsScreen
 import com.eurogames.ui.screens.country.CountryScreen
@@ -49,7 +51,14 @@ fun NavigationDrawerWrapper(
         composable(Routes.Profile.route) {
             MainScreen(
                 screenTitle = "Profile",
-                screenContent = { ProfileScreen() },
+                screenContent = {
+                    val user = SessionManager.user
+                    if (user != null) {
+                        ProfileScreen(user = user)
+                    } else {
+                        Text("No hay usuario disponible")
+                    }
+                },
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }
