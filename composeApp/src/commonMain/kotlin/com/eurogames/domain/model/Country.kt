@@ -1,10 +1,7 @@
 package com.eurogames.domain.model
 
-import com.benasher44.uuid.Uuid
-
 data class Country(
-    val id: Uuid,
-
+    val id: Int? = null,
     val nameCommon: String,
     val nameOfficial: String,
     val capital: String,

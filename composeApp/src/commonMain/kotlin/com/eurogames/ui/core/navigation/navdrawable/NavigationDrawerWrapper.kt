@@ -7,16 +7,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.eurogames.session.SessionManager
 import com.eurogames.ui.core.navigation.Routes
-import com.eurogames.ui.screens.country.CountryDetailsScreen
 import com.eurogames.ui.screens.country.CountryScreen
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
-import com.eurogames.ui.screens.logout.LogoutScreen
-import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
-import com.eurogames.ui.screens.user.profile.ProfileScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -27,6 +22,8 @@ fun NavigationDrawerWrapper(
     val scope = rememberCoroutineScope()
 
     NavHost(navController = navController, startDestination = Routes.Home.route) {
+
+        // Home
         composable(Routes.Home.route) {
             MainScreen(
                 screenTitle = "Home",
@@ -34,6 +31,8 @@ fun NavigationDrawerWrapper(
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }
+
+        // Country List
         composable(Routes.Country.route) {
             MainScreen(
                 screenTitle = "Country",
@@ -41,55 +40,50 @@ fun NavigationDrawerWrapper(
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }
-        composable(Routes.CountryDetail.route) {
-            MainScreen(
-                screenTitle = "Country Details",
-                screenContent = { CountryDetailsScreen() },
-                onDrawerClick = { scope.launch { drawerState.open() } }
-            )
-        }
+
+        // Profile
         composable(Routes.Profile.route) {
-            MainScreen(
-                screenTitle = "Profile",
-                screenContent = {
-                    val user = SessionManager.user
-                    if (user != null) {
-                        ProfileScreen(user = user)
-                    } else {
-                        Text("No hay usuario disponible")
-                    }
-                },
-                onDrawerClick = { scope.launch { drawerState.open() } }
-            )
+            val user = com.eurogames.session.SessionManager.user
+            if (user != null) {
+                MainScreen(
+                    screenTitle = "Profile",
+                    screenContent = { com.eurogames.ui.screens.user.profile.ProfileScreen(user) },
+                    onDrawerClick = { scope.launch { drawerState.open() } }
+                )
+            } else {
+                Text("No hay usuario autenticado.")
+            }
         }
+
+        // Logout
         composable(Routes.Logout.route) {
-            MainScreen(
-                screenTitle = "Logout",
-                screenContent = {
-                    LogoutScreen(
-                        navController = navController,
-                    )
-                },
-                onDrawerClick = { scope.launch { drawerState.open() } }
-            )
+            com.eurogames.ui.screens.logout.LogoutScreen(navController)
         }
+
+        // SignIn
         composable(Routes.SignIn.route) {
-            SignInScreen(
-                onSignUpClick = { navController.navigate(Routes.SignUp.route) },
+            com.eurogames.ui.screens.user.auth.SignInScreen(
                 onLoginSuccess = {
+                    scope.launch { drawerState.close() }
                     navController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.SignIn.route) { inclusive = true }
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }
-                }, onForgotPassword = { navController.navigate(Routes.ForgotPassword.route) }
+                },
+                onSignUpClick = {
+                    navController.navigate(Routes.SignUp.route)
+                }
             )
         }
+        // SignUp
         composable(Routes.SignUp.route) {
             SignUpScreen(
-                onBackToSignIn = { navController.popBackStack() }
+                onBackToSignIn = {
+                    scope.launch { drawerState.close() }
+                    navController.navigate(Routes.SignIn.route) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
+                }
             )
-        }
-        composable(Routes.ForgotPassword.route) {
-            com.eurogames.ui.screens.user.auth.ForgotPasswordScreen()
         }
     }
 }

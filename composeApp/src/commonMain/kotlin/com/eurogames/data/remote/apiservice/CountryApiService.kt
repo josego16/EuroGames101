@@ -1,6 +1,5 @@
 package com.eurogames.data.remote.apiservice
 
-import com.benasher44.uuid.Uuid
 import com.eurogames.data.remote.response.CountryDetailDto
 import com.eurogames.data.remote.response.CountryResponseDto
 import io.ktor.client.HttpClient
@@ -14,7 +13,7 @@ class CountryApiService(private val client: HttpClient) {
         }.getOrDefault(emptyList())
     }
 
-    suspend fun getCountryById(id: Uuid): CountryDetailDto? {
+    suspend fun getCountryById(id: String): CountryDetailDto? {
         return runCatching {
             client.get("countries/$id").body<CountryDetailDto>()
         }.getOrNull()
@@ -59,4 +58,3 @@ class CountryApiService(private val client: HttpClient) {
         }.getOrDefault(emptyList())
     }
 }
-

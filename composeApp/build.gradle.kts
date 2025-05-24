@@ -63,7 +63,6 @@ kotlin {
             implementation(libs.ktor.client.auth)
             implementation(libs.kotlin.serialization)
 
-            implementation(libs.uuid)
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.materialKolor)

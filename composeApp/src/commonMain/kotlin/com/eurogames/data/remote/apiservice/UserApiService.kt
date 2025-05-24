@@ -1,6 +1,5 @@
 package com.eurogames.data.remote.apiservice
 
-import com.benasher44.uuid.Uuid
 import com.eurogames.data.remote.response.UserResponseDto
 import com.eurogames.data.remote.response.UserUpdateDto
 import io.ktor.client.HttpClient
@@ -20,7 +19,7 @@ class UserApiService(private val client: HttpClient) {
         }.getOrDefault(emptyList())
     }
 
-    suspend fun getUserById(id: Uuid): UserResponseDto? {
+    suspend fun getUserById(id: String): UserResponseDto? {
         return runCatching {
             client.get("users/$id").body<UserResponseDto>()
         }.onFailure { error ->
@@ -28,7 +27,7 @@ class UserApiService(private val client: HttpClient) {
         }.getOrNull()
     }
 
-    suspend fun updateUser(id: Uuid, userUpdate: UserUpdateDto): UserResponseDto? {
+    suspend fun updateUser(id: String, userUpdate: UserUpdateDto): UserResponseDto? {
         return runCatching {
             client.patch("users/$id") {
                 setBody(userUpdate)

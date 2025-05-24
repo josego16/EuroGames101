@@ -1,6 +1,5 @@
 package com.eurogames.di
 
-import com.eurogames.domain.usecase.auth.ForgotPasswordUseCase
 import com.eurogames.domain.usecase.auth.SignInUseCase
 import com.eurogames.domain.usecase.auth.SignUpUseCase
 import com.eurogames.domain.usecase.country.FilterCountriesUseCase
@@ -17,7 +16,6 @@ import org.koin.dsl.module
 val domainModule = module {
     factoryOf(::SignInUseCase)
     factoryOf(::SignUpUseCase)
-    factoryOf(::ForgotPasswordUseCase)
 
     factoryOf(::GetAllUsersUseCase)
     factoryOf(::GetUserByIdUseCase)

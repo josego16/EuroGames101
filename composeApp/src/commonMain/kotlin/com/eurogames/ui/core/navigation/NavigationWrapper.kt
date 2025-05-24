@@ -19,13 +19,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Country
-import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.CountryDetail
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Home
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Logout
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Profile
 import com.eurogames.ui.core.navigation.navdrawable.DrawerHeader
 import com.eurogames.ui.core.navigation.navdrawable.NavigationDrawerWrapper
-import com.eurogames.ui.screens.user.auth.ForgotPasswordScreen
 import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
 import kotlinx.coroutines.launch
@@ -47,9 +45,6 @@ fun NavigationWrapper() {
                             inclusive = true
                         }
                     }
-                },
-                onForgotPassword = {
-                    mainNavController.navigate(Routes.ForgotPassword.route)
                 }
             )
         }
@@ -58,15 +53,12 @@ fun NavigationWrapper() {
                 onBackToSignIn = { mainNavController.popBackStack() }
             )
         }
-        composable(Routes.ForgotPassword.route) {
-            ForgotPasswordScreen()
-        }
 
         composable(Routes.Home.route) {
             val drawerNavController = rememberNavController()
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
-            val drawerItems = listOf(Home(), Country(), CountryDetail(), Profile(), Logout())
+            val drawerItems = listOf(Home(), Country(), Profile(), Logout())
 
             ModalNavigationDrawer(
                 drawerState = drawerState,

@@ -2,7 +2,6 @@ package com.eurogames.ui.viewmodels.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.benasher44.uuid.Uuid
 import com.eurogames.Result
 import com.eurogames.domain.model.User
 import com.eurogames.domain.usecase.profile.UpdateUserUseCase
@@ -21,7 +20,7 @@ class ProfileViewModel(
     private val _state = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state
 
-    fun updateUser(userId: Uuid, user: User) {
+    fun updateUser(userId: Int, user: User) {
         _state.update { it.copy(isLoading = true, error = null, updateSuccess = false) }
         viewModelScope.launch(Dispatchers.IO) {
             val result = update(userId, user)
@@ -33,6 +32,7 @@ class ProfileViewModel(
                         updateSuccess = true,
                         error = null
                     )
+
                     is Result.Error -> state.copy(
                         error = result.message,
                         isLoading = false,
@@ -43,4 +43,3 @@ class ProfileViewModel(
         }
     }
 }
-

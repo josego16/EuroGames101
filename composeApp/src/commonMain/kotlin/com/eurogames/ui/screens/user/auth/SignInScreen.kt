@@ -26,8 +26,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SignInScreen(
     onSignUpClick: () -> Unit,
-    onLoginSuccess: () -> Unit,
-    onForgotPassword: () -> Unit
+    onLoginSuccess: () -> Unit
 ) {
     AppTheme {
         val viewmodel = koinViewModel<SignInViewModel>()
@@ -81,8 +80,6 @@ fun SignInScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            AuthLabeledText("Forgot your password?", "Reset it here!", onClick = onForgotPassword)
-
             Spacer(modifier = Modifier.height(8.dp))
             AuthLabeledText("Don't have an account?", "Sign up now!", onClick = onSignUpClick)
 

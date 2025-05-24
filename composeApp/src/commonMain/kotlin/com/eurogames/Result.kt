@@ -9,13 +9,9 @@ sealed class Result<out T> {
     ) : Result<Nothing>()
 
     enum class ErrorType {
-        Network,
         Server,
         Client,
-        Timeout,
-        Unauthorized,
         NotFound,
-        Validation,
         Unknown
     }
 }

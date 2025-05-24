@@ -2,7 +2,6 @@ package com.eurogames.ui.core.navigation.navdrawable
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.sharp.Flag
@@ -29,14 +28,6 @@ sealed class DrawableBarItem {
         override val title: String = "Country",
         override val icon: @Composable () -> Unit = {
             Icon(imageVector = Icons.Sharp.Flag, contentDescription = "Country")
-        }
-    ) : DrawableBarItem()
-
-    data class CountryDetail(
-        override val route: String = Routes.CountryDetail.route,
-        override val title: String = "Country Detail",
-        override val icon: @Composable () -> Unit = {
-            Icon(imageVector = Icons.Default.Details, contentDescription = "Country Detail")
         }
     ) : DrawableBarItem()
 

@@ -3,8 +3,6 @@ package com.eurogames.data.repository
 import com.eurogames.Result
 import com.eurogames.data.mappers.toDomain
 import com.eurogames.data.remote.apiservice.AuthApiService
-import com.eurogames.data.remote.response.ForgotPasswordDto
-import com.eurogames.data.remote.response.ForgotPasswordResponseDto
 import com.eurogames.data.remote.response.SignInDto
 import com.eurogames.data.remote.response.SignUpDto
 import com.eurogames.data.remote.response.SignUpResponseDto
@@ -71,9 +69,5 @@ class AuthRepositoryImpl(
                 )
             }
         }
-    }
-
-    override suspend fun forgotPassword(email: String): Result<ForgotPasswordResponseDto> {
-        return apiService.forgotPassword(ForgotPasswordDto(email))
     }
 }

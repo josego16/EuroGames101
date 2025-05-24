@@ -1,6 +1,5 @@
 package com.eurogames.data.repository
 
-import com.benasher44.uuid.Uuid
 import com.eurogames.Result
 import com.eurogames.data.mappers.toDomain
 import com.eurogames.data.remote.apiservice.UserApiService
@@ -19,8 +18,8 @@ class UserRepositoryImpl(private val apiService: UserApiService) : UserRepositor
         }
     )
 
-    override suspend fun getUserById(id: Uuid): Result<User?> = runCatching {
-        apiService.getUserById(id)?.toDomain()
+    override suspend fun getUserById(id: Int): Result<User?> = runCatching {
+        apiService.getUserById(id.toString())?.toDomain()
     }.fold(
         onSuccess = {
             if (it != null) Result.Success(it)
@@ -32,14 +31,14 @@ class UserRepositoryImpl(private val apiService: UserApiService) : UserRepositor
         }
     )
 
-    override suspend fun updateUser(id: Uuid, user: User): Result<User?> = runCatching {
+    override suspend fun updateUser(id: Int, user: User): Result<User?> = runCatching {
         val updateDto = UserUpdateDto(
             fullName = user.fullName,
             username = user.username,
             email = user.email,
             avatar = user.avatar
         )
-        apiService.updateUser(id, updateDto)?.toDomain()
+        apiService.updateUser(id.toString(), updateDto)?.toDomain()
     }.fold(
         onSuccess = {
             if (it != null) Result.Success(it)

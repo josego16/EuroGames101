@@ -1,9 +1,7 @@
 package com.eurogames.domain.model
 
-import com.benasher44.uuid.Uuid
-
 data class User(
-    var id: Uuid,
+    var id: Int? = null,
     var fullName: String,
     var username: String,
     var password: String,
