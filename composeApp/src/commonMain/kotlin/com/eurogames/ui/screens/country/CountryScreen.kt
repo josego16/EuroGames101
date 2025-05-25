@@ -138,7 +138,6 @@ fun CountryScreen(
     onCountryDetails: (countryId: String) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -189,4 +188,3 @@ fun CountryScreen(
         }
     }
 }
-
