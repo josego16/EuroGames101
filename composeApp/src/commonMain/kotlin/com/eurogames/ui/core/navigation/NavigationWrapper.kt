@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -18,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.eurogames.session.SessionManager
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Country
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Home
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Logout
@@ -69,12 +71,19 @@ fun NavigationWrapper() {
                             .width(220.dp)
                             .fillMaxHeight()
                     ) {
+                        val fullName = SessionManager.user?.fullName ?: "User"
+                        val email = SessionManager.user?.email
                         DrawerHeader(
+                            fullName = fullName,
+                            email = email,
                             onCloseClick = {
                                 scope.launch { drawerState.close() }
                             }
                         )
-                        drawerItems.forEach { item ->
+                        drawerItems.forEachIndexed { index, item ->
+                            if (item is Logout && index != 0) {
+                                HorizontalDivider()
+                            }
                             val currentRoute =
                                 drawerNavController.currentBackStackEntryAsState().value?.destination?.route
                             val selected = currentRoute == item.route

@@ -1,7 +1,11 @@
 package com.eurogames.ui.screens.user.profile
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,12 +37,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eurogames.domain.model.User
 import com.eurogames.ui.core.navigation.utils.AppTheme
 import com.eurogames.ui.viewmodels.profile.ProfileViewModel
+import eurogames101.composeapp.generated.resources.Res
+import eurogames101.composeapp.generated.resources.hombre
+import eurogames101.composeapp.generated.resources.mujer
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
 @Composable
@@ -50,6 +60,12 @@ fun ProfileScreen(user: User) {
     var fullName by remember { mutableStateOf(user.fullName) }
     var username by remember { mutableStateOf(user.username) }
     var email by remember { mutableStateOf(user.email) }
+    var avatar by remember { mutableStateOf(user.avatar ?: "hombre") }
+    var isFlipped by remember { mutableStateOf(false) }
+    val rotationY by animateFloatAsState(
+        targetValue = if (isFlipped) 180f else 0f,
+        animationSpec = tween(durationMillis = 400), label = "rotationY"
+    )
     var showSuccess by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.user) {
@@ -57,6 +73,7 @@ fun ProfileScreen(user: User) {
             fullName = it.fullName
             username = it.username
             email = it.email
+            avatar = it.avatar ?: "hombre"
         }
     }
 
@@ -91,18 +108,42 @@ fun ProfileScreen(user: User) {
                 // Avatar
                 Box(
                     modifier = Modifier
-                        .size(110.dp)
+                        .size(200.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .border(4.dp, MaterialTheme.colorScheme.primary, CircleShape),
+                        .border(4.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                        .clickable {
+                            isFlipped = !isFlipped
+                            if (!isFlipped) {
+                                avatar = if (avatar == "hombre") "mujer" else "hombre"
+                            }
+                        }
+                        .graphicsLayer { this.rotationY = rotationY },
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Avatar",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(64.dp)
-                    )
+                    if (rotationY <= 90f) {
+                        if (avatar == "hombre") {
+                            Image(
+                                painterResource(Res.drawable.hombre),
+                                contentDescription = "Avatar hombre",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.height(200.dp)
+                            )
+                        } else {
+                            Image(
+                                painterResource(Res.drawable.mujer),
+                                contentDescription = "Avatar mujer",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.height(200.dp)
+                            )
+                        }
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Flip avatar",
+                            modifier = Modifier.size(200.dp)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -198,7 +239,8 @@ fun ProfileScreen(user: User) {
                                             user.copy(
                                                 fullName = fullName,
                                                 username = username,
-                                                email = email
+                                                email = email,
+                                                avatar = avatar
                                             )
                                         )
                                     }

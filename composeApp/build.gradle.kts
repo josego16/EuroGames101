@@ -70,6 +70,8 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor2)
             implementation(libs.coil.network.ktor3)
+
+            implementation(libs.components.resources)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
