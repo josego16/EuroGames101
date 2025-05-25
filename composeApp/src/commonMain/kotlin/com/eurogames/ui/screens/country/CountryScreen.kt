@@ -66,19 +66,15 @@ fun CountryCard(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
+            AsyncImage(
+                model = country.flagUrl,
+                contentDescription = "Bandera de ${country.nameCommon}",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(90.dp)
-                    .background(Color.White, RoundedCornerShape(16.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                AsyncImage(
-                    model = country.flagUrl,
-                    contentDescription = "Bandera de ${country.nameCommon}",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(80.dp)
-                )
-            }
+                    .size(120.dp)
+                    .padding(8.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "Nombre común: ${country.nameCommon}",
@@ -88,7 +84,7 @@ fun CountryCard(
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
-                text = "Capital: ${country.capital}",
+                text = "Capital: ${country.capital.joinToString()}",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
