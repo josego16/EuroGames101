@@ -3,6 +3,7 @@ package com.eurogames.data.repository
 import com.eurogames.Result
 import com.eurogames.data.mappers.toDomain
 import com.eurogames.data.remote.apiservice.CountryApiService
+import com.eurogames.data.remote.response.PaginatedResponseDto
 import com.eurogames.domain.model.Country
 import com.eurogames.domain.repository.CountryRepository
 
@@ -13,6 +14,14 @@ class CountryRepositoryImpl(private val apiService: CountryApiService) : Country
         onSuccess = { Result.Success(it) },
         onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
     )
+
+    override suspend fun getCountriesPaginated(page: Int): Result<PaginatedResponseDto> =
+        runCatching {
+            apiService.getCountriesPaginated(page)
+        }.fold(
+            onSuccess = { Result.Success(it) },
+            onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
+        )
 
     override suspend fun getCountryById(id: Int): Result<Country?> = runCatching {
         apiService.getCountryById(id.toString())?.toDomain()
@@ -52,4 +61,5 @@ class CountryRepositoryImpl(private val apiService: CountryApiService) : Country
         onSuccess = { Result.Success(it) },
         onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
     )
+
 }

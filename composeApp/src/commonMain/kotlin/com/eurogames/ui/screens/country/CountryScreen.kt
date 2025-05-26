@@ -1,9 +1,13 @@
 package com.eurogames.ui.screens.country
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -28,6 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush.Companion.horizontalGradient
+import androidx.compose.ui.graphics.Brush.Companion.verticalGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
@@ -51,14 +58,14 @@ fun CountryCard(
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 12.dp)
             .background(
-                brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
+                brush = horizontalGradient(
                     listOf(
                         Color(0xFFe0eafc),
                         Color(0xFFcfdef3)
                     )
                 ),
                 shape = RoundedCornerShape(20.dp)
-            )
+            ).clickable {}
     ) {
         Column(
             modifier = Modifier
@@ -138,7 +145,7 @@ fun CountryScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                brush = verticalGradient(
                     listOf(
                         Color(0xFFe0eafc),
                         Color(0xFFcfdef3)
@@ -168,19 +175,83 @@ fun CountryScreen(
             }
 
             else -> {
-                LazyColumn(
+                Column(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 24.dp)
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(state.countries) { country ->
-                        CountryCard(country = country) {
-                            onCountryDetails(country.id.toString())
+                    LazyColumn(
+                        modifier = Modifier.weight(1f).fillMaxWidth(),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        contentPadding = PaddingValues(vertical = 24.dp)
+                    ) {
+                        items(state.countries) { country ->
+                            CountryCard(country = country) {
+                                onCountryDetails(country.id.toString())
+                            }
                         }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    PaginationBar(
+                        currentPage = state.currentPage,
+                        totalPages = state.totalPages,
+                        onPrev = { viewModel.prevPage() },
+                        onNext = { viewModel.nextPage() },
+                        onPageSelected = { viewModel.goToPage(it) }
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+fun PaginationBar(
+    currentPage: Int,
+    totalPages: Int,
+    onPrev: () -> Unit,
+    onNext: () -> Unit,
+    onPageSelected: (Int) -> Unit
+) {
+    if (totalPages <= 1) return
+    val maxVisiblePages = 5
+    val startPage = when {
+        currentPage <= 2 -> 0
+        currentPage >= totalPages - 3 -> (totalPages - maxVisiblePages).coerceAtLeast(0)
+        else -> currentPage - 2
+    }
+    val endPage = (startPage + maxVisiblePages).coerceAtMost(totalPages)
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .horizontalScroll(rememberScrollState()),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = onPrev,
+            enabled = currentPage > 0,
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier.padding(horizontal = 2.dp)
+        ) { Text("Prev") }
+        for (page in startPage until endPage) {
+            Button(
+                onClick = { onPageSelected(page) },
+                enabled = page != currentPage,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.padding(horizontal = 2.dp)
+            ) {
+                Text((page + 1).toString())
+            }
+        }
+        if (endPage < totalPages) {
+            Text("...", modifier = Modifier.padding(horizontal = 4.dp))
+        }
+        Button(
+            onClick = onNext,
+            enabled = currentPage < totalPages - 1,
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier.padding(horizontal = 2.dp)
+        ) { Text("Next") }
     }
 }

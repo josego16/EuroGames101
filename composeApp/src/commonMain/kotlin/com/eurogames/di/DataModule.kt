@@ -3,6 +3,7 @@ package com.eurogames.di
 import com.eurogames.data.remote.apiservice.AuthApiService
 import com.eurogames.data.remote.apiservice.CountryApiService
 import com.eurogames.data.remote.apiservice.UserApiService
+import com.eurogames.data.remote.paging.CountryPagingSource
 import com.eurogames.data.repository.AuthRepositoryImpl
 import com.eurogames.data.repository.CountryRepositoryImpl
 import com.eurogames.data.repository.TokenStoreRepositoryImpl
@@ -50,6 +51,7 @@ val dataModule = module {
     factoryOf(::AuthApiService)
     factoryOf(::CountryApiService)
     factoryOf(::UserApiService)
+    factoryOf(::CountryPagingSource)
 
     factory<CountryRepository> { CountryRepositoryImpl(get()) }
     factory<UserRepository> { UserRepositoryImpl(get()) }

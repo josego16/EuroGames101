@@ -35,9 +35,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
-
-            implementation(libs.androidx.paging.runtime)
-            implementation(libs.androidx.paging.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -81,7 +78,6 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            implementation(libs.paging.runtime.uikit)
         }
     }
 }

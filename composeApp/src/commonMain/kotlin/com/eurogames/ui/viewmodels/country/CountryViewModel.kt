@@ -3,34 +3,65 @@ package com.eurogames.ui.viewmodels.country
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
-import com.eurogames.domain.usecase.country.GetAllCountriesUseCase
+import com.eurogames.data.mappers.toDomain
+import com.eurogames.domain.repository.CountryRepository
 import com.eurogames.ui.state.CountryState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CountryViewModel(
-    private val getAllCountriesUseCase: GetAllCountriesUseCase
+    private val countryRepository: CountryRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(CountryState())
     val state: StateFlow<CountryState> = _state
 
     init {
-        loadCountries()
+        loadCountriesPage(0)
     }
 
-    fun loadCountries() {
+    fun loadCountriesPage(page: Int) {
         _state.value = _state.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
-            when (val result = getAllCountriesUseCase()) {
+            when (val result = countryRepository.getCountriesPaginated(page)) {
                 is Result.Success -> {
-                    _state.value = CountryState(countries = result.data, isLoading = false)
+                    val paged = result.data
+                    _state.value = _state.value.copy(
+                        countries = paged.items.map { it.toDomain() },
+                        isLoading = false,
+                        error = null,
+                        currentPage = page,
+                        totalPages = paged.info.pages
+                    )
                 }
 
                 is Result.Error -> {
-                    _state.value = CountryState(error = result.message, isLoading = false)
+                    _state.value = _state.value.copy(
+                        error = result.message,
+                        isLoading = false
+                    )
                 }
             }
+        }
+    }
+
+    fun nextPage() {
+        val next = _state.value.currentPage + 1
+        if (next < _state.value.totalPages) {
+            loadCountriesPage(next)
+        }
+    }
+
+    fun prevPage() {
+        val prev = _state.value.currentPage - 1
+        if (prev >= 0) {
+            loadCountriesPage(prev)
+        }
+    }
+
+    fun goToPage(page: Int) {
+        if (page in 0 until _state.value.totalPages) {
+            loadCountriesPage(page)
         }
     }
 }
