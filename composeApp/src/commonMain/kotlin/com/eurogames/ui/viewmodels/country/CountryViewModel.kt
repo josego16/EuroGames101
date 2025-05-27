@@ -10,9 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class CountryViewModel(
-    private val countryRepository: CountryRepository
-) : ViewModel() {
+class CountryViewModel(private val countryRepository: CountryRepository) : ViewModel() {
     private val _state = MutableStateFlow(CountryState())
     val state: StateFlow<CountryState> = _state
 
@@ -39,6 +37,36 @@ class CountryViewModel(
                     _state.value = _state.value.copy(
                         error = result.message,
                         isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    fun loadCountryDetail(id: Int) {
+        _state.value = _state.value.copy(isLoading = true, detailError = null)
+        viewModelScope.launch {
+            when (val result = countryRepository.getCountryById(id)) {
+                is Result.Success -> {
+                    result.data?.let { country ->
+                        _state.value = _state.value.copy(
+                            countrySeleccionado = country,
+                            isLoading = false,
+                            detailError = null
+                        )
+                    } ?: run {
+                        _state.value = _state.value.copy(
+                            countrySeleccionado = null,
+                            isLoading = false,
+                            detailError = "No se encontró información del país."
+                        )
+                    }
+                }
+                is Result.Error -> {
+                    _state.value = _state.value.copy(
+                        countrySeleccionado = null,
+                        isLoading = false,
+                        detailError = result.message
                     )
                 }
             }

@@ -1,4 +1,4 @@
-package com.eurogames.ui.core.navigation.utils
+package com.eurogames.ui.core.utils
 
 import android.annotation.SuppressLint
 import androidx.compose.ui.Modifier

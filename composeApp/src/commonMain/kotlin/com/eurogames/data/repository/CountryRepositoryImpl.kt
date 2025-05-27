@@ -33,33 +33,10 @@ class CountryRepositoryImpl(private val apiService: CountryApiService) : Country
         onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
     )
 
-    override suspend fun filterCountries(
-        region: String?,
-        subregion: String?,
-        min: Long?,
-        max: Long?
-    ): Result<List<Country>> = runCatching {
-        apiService.filterCountries(region, subregion, min, max).map { it.toDomain() }
-    }.fold(
-        onSuccess = { Result.Success(it) },
-        onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
-    )
-
     override suspend fun searchCountries(text: String?): Result<List<Country>> = runCatching {
         apiService.searchCountries(text).map { it.toDomain() }
     }.fold(
         onSuccess = { Result.Success(it) },
         onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
     )
-
-    override suspend fun sortedCountries(
-        sortBy: String?,
-        descending: Boolean
-    ): Result<List<Country>> = runCatching {
-        apiService.sortCountries(sortBy, descending).map { it.toDomain() }
-    }.fold(
-        onSuccess = { Result.Success(it) },
-        onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
-    )
-
 }

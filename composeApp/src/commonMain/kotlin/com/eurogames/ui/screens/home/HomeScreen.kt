@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.eurogames.ui.core.navigation.utils.AppTheme
-import com.eurogames.ui.core.navigation.utils.SeedColor
+import com.eurogames.ui.core.utils.AppTheme
+import com.eurogames.ui.core.utils.SeedColor
 
 @Composable
 fun HomeScreen() {

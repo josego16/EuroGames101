@@ -13,10 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(
-    private val update: UpdateUserUseCase
-) : ViewModel() {
-
+class ProfileViewModel(private val update: UpdateUserUseCase) : ViewModel() {
     private val _state = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state
 

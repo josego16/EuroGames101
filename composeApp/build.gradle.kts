@@ -49,7 +49,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.precompose)
             implementation(libs.precompose.viewmodel)
-            implementation(libs.navigation.compose)
+            implementation(libs.androidx.navigation.compose)
 
             implementation(libs.viewmodel.compose)
 

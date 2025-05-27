@@ -8,7 +8,6 @@ data class CountryResponseDto(
     val nameCommon: String,
     val capital: List<String> = listOf(),
     val region: String,
-    val subregion: String,
     val flagUrl: String? = null
 )
 

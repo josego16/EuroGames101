@@ -43,30 +43,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eurogames.domain.model.User
-import com.eurogames.ui.core.navigation.utils.AppTheme
+import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.viewmodels.profile.ProfileViewModel
 import eurogames101.composeapp.generated.resources.Res
 import eurogames101.composeapp.generated.resources.hombre
 import eurogames101.composeapp.generated.resources.mujer
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
 @Composable
 fun ProfileScreen(user: User) {
-    val viewModel: ProfileViewModel = koinInject()
-    val state by viewModel.state.collectAsState()
+    val profileViewModel: ProfileViewModel = koinInject()
+    val state by profileViewModel.state.collectAsState()
 
-    var isEditing by remember { mutableStateOf(false) }
     var fullName by remember { mutableStateOf(user.fullName) }
     var username by remember { mutableStateOf(user.username) }
     var email by remember { mutableStateOf(user.email) }
     var avatar by remember { mutableStateOf(user.avatar ?: "hombre") }
+
+    var isEditing by remember { mutableStateOf(false) }
+    var showSuccess by remember { mutableStateOf(false) }
     var isFlipped by remember { mutableStateOf(false) }
     val rotationY by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
         animationSpec = tween(durationMillis = 400), label = "rotationY"
     )
-    var showSuccess by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.user) {
         state.user?.let {
@@ -234,7 +236,7 @@ fun ProfileScreen(user: User) {
                             onClick = {
                                 if (isEditing) {
                                     user.id?.let { safeId ->
-                                        viewModel.updateUser(
+                                        profileViewModel.updateUser(
                                             safeId,
                                             user.copy(
                                                 fullName = fullName,
@@ -273,7 +275,7 @@ fun ProfileScreen(user: User) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text("¡Perfil actualizado!", color = MaterialTheme.colorScheme.primary)
                     LaunchedEffect(Unit) {
-                        kotlinx.coroutines.delay(1500)
+                        delay(1500)
                         showSuccess = false
                     }
                 }

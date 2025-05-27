@@ -1,4 +1,4 @@
-package com.eurogames.ui.core.navigation.utils
+package com.eurogames.ui.core.utils
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable

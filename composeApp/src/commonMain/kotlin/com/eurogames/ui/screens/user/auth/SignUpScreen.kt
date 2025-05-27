@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.eurogames.domain.model.auth.SignUpFormData
-import com.eurogames.ui.core.navigation.utils.AppTheme
+import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.screens.user.auth.components.AuthButton
 import com.eurogames.ui.screens.user.auth.components.AuthLabeledText
 import com.eurogames.ui.screens.user.auth.components.AuthScreenContainer
@@ -28,22 +28,22 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SignUpScreen(onBackToSignIn: () -> Unit) {
+    val signUpViewModel = koinViewModel<SignUpViewModel>()
+    val state by signUpViewModel.state.collectAsState()
+
+    var fullName by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+
+    var fullNameError by remember { mutableStateOf("") }
+    var usernameError by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf("") }
+    var confirmPasswordError by remember { mutableStateOf("") }
+
     AppTheme {
-        val viewmodel = koinViewModel<SignUpViewModel>()
-        val state by viewmodel.state.collectAsState()
-
-        var fullName by remember { mutableStateOf("") }
-        var username by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var confirmPassword by remember { mutableStateOf("") }
-
-        var fullNameError by remember { mutableStateOf("") }
-        var usernameError by remember { mutableStateOf("") }
-        var emailError by remember { mutableStateOf("") }
-        var passwordError by remember { mutableStateOf("") }
-        var confirmPasswordError by remember { mutableStateOf("") }
-
         AuthScreenContainer(title = "Sign Up") {
             AuthTextField(
                 label = "Full Name",
@@ -126,7 +126,7 @@ fun SignUpScreen(onBackToSignIn: () -> Unit) {
                             confirmPasswordError
                         ).all { it.isEmpty() }
                     ) {
-                        viewmodel.signUp(
+                        signUpViewModel.signUp(
                             SignUpFormData(
                                 fullName,
                                 username,

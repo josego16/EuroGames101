@@ -15,7 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.eurogames.ui.core.navigation.utils.AppTheme
+import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.screens.user.auth.components.AuthButton
 import com.eurogames.ui.screens.user.auth.components.AuthLabeledText
 import com.eurogames.ui.screens.user.auth.components.AuthScreenContainer
@@ -28,28 +28,29 @@ fun SignInScreen(
     onSignUpClick: () -> Unit,
     onLoginSuccess: () -> Unit
 ) {
-    AppTheme {
-        val viewmodel = koinViewModel<SignInViewModel>()
-        val state by viewmodel.state.collectAsState()
+    val signInViewModel = koinViewModel<SignInViewModel>()
+    val state by signInViewModel.state.collectAsState()
 
-        var username by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var usernameError by remember { mutableStateOf("") }
-        var passwordError by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-        LaunchedEffect(state.user) {
-            if (state.user != null && state.error == null) {
-                onLoginSuccess()
-            }
+    var usernameError by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf("") }
+
+    LaunchedEffect(state.user) {
+        if (state.user != null && state.error == null) {
+            onLoginSuccess()
         }
-
+    }
+    AppTheme {
         AuthScreenContainer(title = "Sign In") {
             AuthTextField(
                 label = "Username",
                 value = username,
                 onValueChange = {
                     username = it
-                    usernameError = if (it.length < 3) "Username must be at least 3 characters" else ""
+                    usernameError =
+                        if (it.length < 3) "Username must be at least 3 characters" else ""
                 },
                 error = usernameError,
                 leadingIcon = { Icon(Icons.Rounded.AccountCircle, contentDescription = "Username") }
@@ -59,7 +60,8 @@ fun SignInScreen(
                 value = password,
                 onValueChange = {
                     password = it
-                    passwordError = if (it.length < 6) "Password must be at least 6 characters" else ""
+                    passwordError =
+                        if (it.length < 6) "Password must be at least 6 characters" else ""
                 },
                 error = passwordError,
                 isPassword = true,
@@ -74,7 +76,7 @@ fun SignInScreen(
                         if (password.isBlank() || password.length < 6) "Password must be at least 6 characters" else ""
 
                     if (usernameError.isEmpty() && passwordError.isEmpty()) {
-                        viewmodel.signIn(username, password)
+                        signInViewModel.signIn(username, password)
                     }
                 }
             )

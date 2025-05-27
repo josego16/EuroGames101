@@ -7,5 +7,7 @@ data class CountryState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val currentPage: Int = 0,
-    val totalPages: Int = 1
+    val totalPages: Int = 1,
+    val countrySeleccionado: Country? = null,
+    val detailError: String? = null
 )

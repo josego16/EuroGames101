@@ -7,7 +7,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.eurogames.ui.core.navigation.CountryDetail
 import com.eurogames.ui.core.navigation.Routes
+import com.eurogames.ui.screens.country.CountryDetailScreen
 import com.eurogames.ui.screens.country.CountryScreen
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
@@ -36,9 +39,20 @@ fun NavigationDrawerWrapper(
         composable(Routes.Country.route) {
             MainScreen(
                 screenTitle = "Country",
-                screenContent = { CountryScreen() },
+                screenContent = {
+                    CountryScreen(
+                        navigateToDetail = { countryId ->
+                            navController.navigate(CountryDetail(countryId))
+                        }
+                    )
+                },
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
+        }
+        // CountryDetail type-safe route
+        composable<CountryDetail> { navBackStackEntry ->
+            val detail: CountryDetail = navBackStackEntry.toRoute<CountryDetail>()
+            CountryDetailScreen(detail.id)
         }
 
         // Profile
