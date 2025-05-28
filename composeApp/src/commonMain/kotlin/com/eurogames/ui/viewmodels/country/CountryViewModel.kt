@@ -5,12 +5,19 @@ import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
 import com.eurogames.data.mappers.toDomain
 import com.eurogames.domain.repository.CountryRepository
+import com.eurogames.domain.repository.TokenStoreRepository
 import com.eurogames.ui.state.CountryState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class CountryViewModel(private val countryRepository: CountryRepository) : ViewModel() {
+class CountryViewModel(
+    private val countryRepository: CountryRepository,
+    private val tokenStoreRepository: TokenStoreRepository
+) : ViewModel() {
+
+    private fun getToken() = tokenStoreRepository.getToken()
+
     private val _state = MutableStateFlow(CountryState())
     val state: StateFlow<CountryState> = _state
 
@@ -21,6 +28,8 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
     fun loadCountriesPage(page: Int) {
         _state.value = _state.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
+            println("[CountryViewModel] Token actual: ${getToken()}")  // Aquí logueamos el token
+
             when (val result = countryRepository.getCountriesPaginated(page)) {
                 is Result.Success -> {
                     val paged = result.data
@@ -34,6 +43,8 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
                 }
 
                 is Result.Error -> {
+                    println("[CountryViewModel] Error al cargar países: ${result.message}")
+                    result.cause?.printStackTrace()
                     _state.value = _state.value.copy(
                         error = result.message,
                         isLoading = false
@@ -63,6 +74,8 @@ class CountryViewModel(private val countryRepository: CountryRepository) : ViewM
                     }
                 }
                 is Result.Error -> {
+                    println("[CountryViewModel] Error al cargar detalle de país: ${result.message}")
+                    result.cause?.printStackTrace()
                     _state.value = _state.value.copy(
                         countrySeleccionado = null,
                         isLoading = false,

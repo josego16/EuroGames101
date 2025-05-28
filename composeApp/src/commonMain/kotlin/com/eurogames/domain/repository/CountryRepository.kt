@@ -8,5 +8,4 @@ interface CountryRepository {
     suspend fun getAllCountries(): Result<List<Country>>
     suspend fun getCountryById(id: Int): Result<Country?>
     suspend fun getCountriesPaginated(page: Int): Result<PaginatedResponseDto>
-    suspend fun searchCountries(text: String?): Result<List<Country>>
 }

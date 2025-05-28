@@ -32,11 +32,4 @@ class CountryRepositoryImpl(private val apiService: CountryApiService) : Country
         },
         onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
     )
-
-    override suspend fun searchCountries(text: String?): Result<List<Country>> = runCatching {
-        apiService.searchCountries(text).map { it.toDomain() }
-    }.fold(
-        onSuccess = { Result.Success(it) },
-        onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
-    )
 }

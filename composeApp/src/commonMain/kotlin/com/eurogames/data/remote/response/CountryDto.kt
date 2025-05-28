@@ -19,7 +19,6 @@ data class CountryDetailDto(
     val capital: List<String> = listOf(),
     val region: String,
     val subregion: String,
-    val language: String,
     val population: Long,
     val timezones: List<String> = listOf(),
     val continents:List<String> = listOf(),

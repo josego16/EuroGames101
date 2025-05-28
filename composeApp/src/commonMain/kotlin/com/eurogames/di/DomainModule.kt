@@ -4,7 +4,6 @@ import com.eurogames.domain.usecase.auth.SignInUseCase
 import com.eurogames.domain.usecase.auth.SignUpUseCase
 import com.eurogames.domain.usecase.country.GetAllCountriesUseCase
 import com.eurogames.domain.usecase.country.GetCountryByIdUseCase
-import com.eurogames.domain.usecase.country.SearchCountriesUseCase
 import com.eurogames.domain.usecase.profile.GetAllUsersUseCase
 import com.eurogames.domain.usecase.profile.GetUserByIdUseCase
 import com.eurogames.domain.usecase.profile.UpdateUserUseCase
@@ -21,5 +20,4 @@ val domainModule = module {
 
     factoryOf(::GetAllCountriesUseCase)
     factoryOf(::GetCountryByIdUseCase)
-    factoryOf(::SearchCountriesUseCase)
 }

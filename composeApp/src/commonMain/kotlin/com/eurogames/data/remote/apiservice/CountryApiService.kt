@@ -26,14 +26,4 @@ class CountryApiService(private val client: HttpClient) {
             client.get("countries/$id").body<CountryDetailDto>()
         }.getOrNull()
     }
-
-    suspend fun searchCountries(text: String?): List<CountryResponseDto> {
-        val url = buildString {
-            append("countries/search?")
-            if (!text.isNullOrBlank()) append("text=${text}")
-        }
-        return runCatching {
-            client.get(url).body<List<CountryResponseDto>>()
-        }.getOrDefault(emptyList())
-    }
 }

@@ -18,7 +18,7 @@ import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.http.ContentType
+import io.ktor.client.request.header
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
@@ -30,16 +30,22 @@ val dataModule = module {
     single {
         val baseUrl = getBaseUrl()
         val parsedUrl = Url(baseUrl)
+        val tokenStore: TokenStoreRepository = get()
 
         HttpClient {
             install(ContentNegotiation) {
-                json(Json { ignoreUnknownKeys = true }, contentType = ContentType.Any)
+                json(Json { ignoreUnknownKeys = true })
             }
             install(DefaultRequest) {
                 url {
                     protocol = URLProtocol.HTTP
                     host = parsedUrl.host
                     port = parsedUrl.port
+                }
+                // Obtener token dinámicamente en cada petición
+                val token = tokenStore.getToken()
+                if (!token.isNullOrBlank()) {
+                    header("Authorization", "Bearer $token")
                 }
             }
             install(Logging) {
@@ -53,8 +59,8 @@ val dataModule = module {
     factoryOf(::UserApiService)
     factoryOf(::CountryPagingSource)
 
+    single<TokenStoreRepository> { TokenStoreRepositoryImpl() }
+    factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStoreRepository = get()) }
     factory<CountryRepository> { CountryRepositoryImpl(get()) }
     factory<UserRepository> { UserRepositoryImpl(get()) }
-    factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStoreRepository = get()) }
-    factory<TokenStoreRepository> { TokenStoreRepositoryImpl() }
 }

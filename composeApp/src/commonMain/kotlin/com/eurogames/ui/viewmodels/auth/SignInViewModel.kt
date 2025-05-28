@@ -3,6 +3,7 @@ package com.eurogames.ui.viewmodels.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
+import com.eurogames.domain.repository.TokenStoreRepository
 import com.eurogames.domain.usecase.auth.SignInUseCase
 import com.eurogames.session.SessionManager
 import com.eurogames.ui.state.SignInState
@@ -14,7 +15,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SignInViewModel(private val usecase: SignInUseCase) : ViewModel() {
+class SignInViewModel(
+    private val usecase: SignInUseCase,
+    private val tokenStore: TokenStoreRepository
+) : ViewModel() {
     private val _state = MutableStateFlow(SignInState())
     val state: StateFlow<SignInState> = _state
 
@@ -34,6 +38,7 @@ class SignInViewModel(private val usecase: SignInUseCase) : ViewModel() {
             }
             when (result) {
                 is Result.Success -> {
+                    tokenStore.saveToken(result.data.token)
                     SessionManager.userId = result.data.user.id
                     SessionManager.user = result.data.user
                     _state.update { it.copy(user = result.data, isLoading = false, error = null) }
