@@ -6,7 +6,7 @@ import com.eurogames.data.remote.apiservice.AuthApiService
 import com.eurogames.data.remote.response.SignInDto
 import com.eurogames.data.remote.response.SignUpDto
 import com.eurogames.data.remote.response.SignUpResponseDto
-import com.eurogames.domain.model.User
+import com.eurogames.domain.model.UserModel
 import com.eurogames.domain.model.auth.AuthResult
 import com.eurogames.domain.repository.AuthRepository
 import com.eurogames.domain.repository.TokenStoreRepository
@@ -37,7 +37,7 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun signUp(user: User): Result<User> {
+    override suspend fun signUp(user: UserModel): Result<UserModel> {
         return when (val response = apiService.signUp(
             SignUpDto(
                 fullName = user.fullName,
@@ -50,7 +50,7 @@ class AuthRepositoryImpl(
             is Result.Success -> {
                 val dto: SignUpResponseDto = response.data
                 Result.Success(
-                    User(
+                    UserModel(
                         id = dto.id,
                         fullName = dto.fullName,
                         username = dto.username,

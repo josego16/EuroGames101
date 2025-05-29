@@ -1,6 +1,6 @@
 package com.eurogames.domain.model
 
-data class User(
+data class UserModel(
     var id: Int? = null,
     var fullName: String,
     var username: String,

@@ -3,7 +3,7 @@ package com.eurogames.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Country(
+data class CountryModel(
     val id: Int,
 
     val nameCommon: String,

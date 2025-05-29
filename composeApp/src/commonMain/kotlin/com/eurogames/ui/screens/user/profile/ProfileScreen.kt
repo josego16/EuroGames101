@@ -42,7 +42,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eurogames.domain.model.User
+import com.eurogames.domain.model.UserModel
 import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.viewmodels.profile.ProfileViewModel
 import eurogames101.composeapp.generated.resources.Res
@@ -53,7 +53,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
 @Composable
-fun ProfileScreen(user: User) {
+fun ProfileScreen(user: UserModel) {
     val profileViewModel: ProfileViewModel = koinInject()
     val state by profileViewModel.state.collectAsState()
 
@@ -201,9 +201,9 @@ fun ProfileScreen(user: User) {
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = "@$username",
+                                text = username,
                                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-                                color = MaterialTheme.colorScheme.secondary,
+                                color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
                         }

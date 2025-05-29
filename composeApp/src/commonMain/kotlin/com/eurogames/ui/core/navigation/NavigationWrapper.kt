@@ -26,10 +26,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.eurogames.domain.repository.TokenStoreRepository
 import com.eurogames.session.SessionManager
-import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Country
-import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Home
-import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Logout
-import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.Profile
+import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.CountryItem
+import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.GameItem
+import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.HomeItem
+import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.LogoutItem
+import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.ProfileItem
 import com.eurogames.ui.core.navigation.navdrawable.DrawerHeader
 import com.eurogames.ui.core.navigation.navdrawable.NavigationDrawerWrapper
 import com.eurogames.ui.screens.splash.SplashScreen
@@ -82,7 +83,7 @@ fun NavigationWrapper() {
                 val drawerNavController = rememberNavController()
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
-                val drawerItems = listOf(Home(), Country(), Profile(), Logout())
+                val drawerItems = listOf(HomeItem(), CountryItem(), GameItem(), ProfileItem(), LogoutItem())
 
                 ModalNavigationDrawer(
                     drawerState = drawerState,
@@ -93,7 +94,7 @@ fun NavigationWrapper() {
                                 .width(220.dp)
                                 .fillMaxHeight()
                         ) {
-                            val fullName = SessionManager.user?.fullName ?: "User"
+                            val fullName = SessionManager.user?.fullName ?: "UserModel"
                             val email = SessionManager.user?.email
                             DrawerHeader(
                                 fullName = fullName,
@@ -103,7 +104,7 @@ fun NavigationWrapper() {
                                 }
                             )
                             drawerItems.forEachIndexed { index, item ->
-                                if (item is Logout && index != 0) {
+                                if (item is LogoutItem && index != 0) {
                                     HorizontalDivider()
                                 }
                                 val currentRoute =

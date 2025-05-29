@@ -3,7 +3,7 @@ package com.eurogames.ui.viewmodels.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
-import com.eurogames.domain.model.User
+import com.eurogames.domain.model.UserModel
 import com.eurogames.domain.usecase.profile.UpdateUserUseCase
 import com.eurogames.ui.state.ProfileState
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ class ProfileViewModel(private val update: UpdateUserUseCase) : ViewModel() {
     private val _state = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state
 
-    fun updateUser(userId: Int, user: User) {
+    fun updateUser(userId: Int, user: UserModel) {
         _state.update { it.copy(isLoading = true, error = null, updateSuccess = false) }
         viewModelScope.launch(Dispatchers.IO) {
             val result = update(userId, user)

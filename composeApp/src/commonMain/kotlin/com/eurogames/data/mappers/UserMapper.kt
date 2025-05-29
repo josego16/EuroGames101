@@ -1,10 +1,10 @@
 package com.eurogames.data.mappers
 
 import com.eurogames.data.remote.response.UserResponseDto
-import com.eurogames.domain.model.User
+import com.eurogames.domain.model.UserModel
 
-fun UserResponseDto.toDomain(): User {
-    return User(
+fun UserResponseDto.toDomain(): UserModel {
+    return UserModel(
         id = id,
         fullName = fullName,
         username = username,

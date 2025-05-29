@@ -9,9 +9,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.eurogames.ui.core.navigation.CountryDetail
+import com.eurogames.ui.core.navigation.GuessTheFlag
+import com.eurogames.ui.core.navigation.Quiz
 import com.eurogames.ui.core.navigation.Routes
 import com.eurogames.ui.screens.country.CountryDetailScreen
 import com.eurogames.ui.screens.country.CountryScreen
+import com.eurogames.ui.screens.game.GameScreen
+import com.eurogames.ui.screens.game.minigames.GuessTheFlagScreen
+import com.eurogames.ui.screens.game.minigames.QuizScreen
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
@@ -26,7 +31,7 @@ fun NavigationDrawerWrapper(
 
     NavHost(navController = navController, startDestination = Routes.Home.route) {
 
-        // Home
+        // HomeItem
         composable(Routes.Home.route) {
             MainScreen(
                 screenTitle = "Home",
@@ -35,10 +40,10 @@ fun NavigationDrawerWrapper(
             )
         }
 
-        // Country List
+        // CountryItem List
         composable(Routes.Country.route) {
             MainScreen(
-                screenTitle = "Country",
+                screenTitle = "List of Countries",
                 screenContent = {
                     CountryScreen(
                         navigateToDetail = { countryId ->
@@ -55,7 +60,44 @@ fun NavigationDrawerWrapper(
             CountryDetailScreen(detail.id)
         }
 
-        // Profile
+        // GameItem
+        composable(Routes.Game.route) {
+            MainScreen(
+                screenTitle = "Game",
+                screenContent = {
+                    GameScreen(
+                        navigateToGame = { gameId, gameType ->
+                            when (gameType) {
+                                com.eurogames.domain.enums.GameType.Guess_the_flag -> navController.navigate(
+                                    GuessTheFlag(gameId)
+                                )
+
+                                com.eurogames.domain.enums.GameType.Quiz -> navController.navigate(
+                                    Quiz(gameId)
+                                )
+
+                                else -> {
+                                    println("Unsupported game type: $gameType")
+                                }
+                            }
+                        }
+                    )
+                },
+                onDrawerClick = { scope.launch { drawerState.open() } }
+            )
+        }
+        // GuessTheFlag type-safe route
+        composable<GuessTheFlag> { navBackStackEntry ->
+            val guessTheFlag: GuessTheFlag = navBackStackEntry.toRoute<GuessTheFlag>()
+            GuessTheFlagScreen(guessTheFlag.id)
+        }
+        // GuessTheFlag type-safe route
+        composable<Quiz> { navBackStackEntry ->
+            val quiz: Quiz = navBackStackEntry.toRoute<Quiz>()
+            QuizScreen(quiz.id)
+        }
+
+        // ProfileItem
         composable(Routes.Profile.route) {
             val user = com.eurogames.session.SessionManager.user
             if (user != null) {
@@ -69,7 +111,7 @@ fun NavigationDrawerWrapper(
             }
         }
 
-        // Logout
+        // LogoutItem
         composable(Routes.Logout.route) {
             com.eurogames.ui.screens.logout.LogoutScreen(navController)
         }

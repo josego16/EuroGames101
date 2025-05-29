@@ -35,79 +35,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.eurogames.domain.model.Country
+import com.eurogames.domain.model.CountryModel
 import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.viewmodels.country.CountryViewModel
 import org.koin.compose.viewmodel.koinViewModel
-
-@Composable
-fun CountryCard(country: Country, onItemSelected: (Country) -> Unit) {
-    AppTheme {
-        Card(
-            shape = RoundedCornerShape(20.dp),
-            elevation = CardDefaults.cardElevation(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 12.dp)
-                .background(
-                    brush = horizontalGradient(
-                        listOf(
-                            Color(0xFFe0eafc),
-                            Color(0xFFcfdef3)
-                        )
-                    ),
-                    shape = RoundedCornerShape(20.dp)
-                )
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    model = country.flagUrl,
-                    contentDescription = "Bandera de ${country.nameCommon}",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .padding(8.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = "Nombre común: ${country.nameCommon}",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = "Capital: ${country.capital.joinToString()}",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = "Región: ${country.region}",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Button(
-                    onClick = { onItemSelected(country) },
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Detalles", maxLines = 1)
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun CountryScreen(navigateToDetail: (Int) -> Unit) {
@@ -175,6 +106,75 @@ fun CountryScreen(navigateToDetail: (Int) -> Unit) {
                         onNext = { countryViewModel.nextPage() },
                         onPageSelected = { countryViewModel.goToPage(it) }
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CountryCard(country: CountryModel, onItemSelected: (CountryModel) -> Unit) {
+    AppTheme {
+        Card(
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 12.dp)
+                .background(
+                    brush = horizontalGradient(
+                        listOf(
+                            Color(0xFFe0eafc),
+                            Color(0xFFcfdef3)
+                        )
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AsyncImage(
+                    model = country.flagUrl,
+                    contentDescription = "Bandera de ${country.nameCommon}",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(8.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Nombre común: ${country.nameCommon}",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "Capital: ${country.capital.joinToString()}",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "Región: ${country.region}",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    onClick = { onItemSelected(country) },
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Detalles", maxLines = 1)
                 }
             }
         }

@@ -15,7 +15,6 @@ class CountryViewModel(
     private val countryRepository: CountryRepository,
     private val tokenStoreRepository: TokenStoreRepository
 ) : ViewModel() {
-
     private fun getToken() = tokenStoreRepository.getToken()
 
     private val _state = MutableStateFlow(CountryState())
@@ -61,13 +60,13 @@ class CountryViewModel(
                 is Result.Success -> {
                     result.data?.let { country ->
                         _state.value = _state.value.copy(
-                            countrySeleccionado = country,
+                            selectedCountry = country,
                             isLoading = false,
                             detailError = null
                         )
                     } ?: run {
                         _state.value = _state.value.copy(
-                            countrySeleccionado = null,
+                            selectedCountry = null,
                             isLoading = false,
                             detailError = "No se encontró información del país."
                         )
@@ -77,7 +76,7 @@ class CountryViewModel(
                     println("[CountryViewModel] Error al cargar detalle de país: ${result.message}")
                     result.cause?.printStackTrace()
                     _state.value = _state.value.copy(
-                        countrySeleccionado = null,
+                        selectedCountry = null,
                         isLoading = false,
                         detailError = result.message
                     )

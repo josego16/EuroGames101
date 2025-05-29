@@ -4,11 +4,11 @@ import com.eurogames.Result
 import com.eurogames.data.mappers.toDomain
 import com.eurogames.data.remote.apiservice.CountryApiService
 import com.eurogames.data.remote.response.PaginatedResponseDto
-import com.eurogames.domain.model.Country
+import com.eurogames.domain.model.CountryModel
 import com.eurogames.domain.repository.CountryRepository
 
 class CountryRepositoryImpl(private val apiService: CountryApiService) : CountryRepository {
-    override suspend fun getAllCountries(): Result<List<Country>> = runCatching {
+    override suspend fun getAllCountries(): Result<List<CountryModel>> = runCatching {
         apiService.getAllCountries().map { it.toDomain() }
     }.fold(
         onSuccess = { Result.Success(it) },
@@ -23,7 +23,7 @@ class CountryRepositoryImpl(private val apiService: CountryApiService) : Country
             onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
         )
 
-    override suspend fun getCountryById(id: Int): Result<Country?> = runCatching {
+    override suspend fun getCountryById(id: Int): Result<CountryModel?> = runCatching {
         apiService.getCountryById(id.toString())?.toDomain()
     }.fold(
         onSuccess = {

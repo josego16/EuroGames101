@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.eurogames.domain.model.Country
+import com.eurogames.domain.model.CountryModel
 import com.eurogames.ui.core.ex.continentBackground
 import com.eurogames.ui.core.ex.continentBorder
 import com.eurogames.ui.core.utils.AppTheme
@@ -59,14 +59,14 @@ fun CountryDetailScreen(countryId: Int) {
     val state by detailViewModel.state.collectAsState()
 
     LaunchedEffect(countryId) {
-        if (state.countrySeleccionado?.id != countryId) {
+        if (state.selectedCountry?.id != countryId) {
             detailViewModel.loadCountryDetail(countryId)
         }
     }
 
     AppTheme {
         Column(modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor)) {
-            state.countrySeleccionado?.let { country ->
+            state.selectedCountry?.let { country ->
                 MainHeader(country)
                 Spacer(modifier = Modifier.height(16.dp))
                 Column(
@@ -82,7 +82,7 @@ fun CountryDetailScreen(countryId: Int) {
 }
 
 @Composable
-fun MainHeader(country: Country) {
+fun MainHeader(country: CountryModel) {
     Box(modifier = Modifier.fillMaxWidth().height(300.dp)) {
         Image(
             painter = painterResource(Res.drawable.blueSky),
@@ -95,7 +95,7 @@ fun MainHeader(country: Country) {
 }
 
 @Composable
-fun CountryHeader(country: Country) {
+fun CountryHeader(country: CountryModel) {
     val continent = country.continents.firstOrNull() ?: "Unknown"
 
     var isFlipped by remember { mutableStateOf(false) }
@@ -188,7 +188,7 @@ fun CountryHeader(country: Country) {
 }
 
 @Composable
-fun CountryInformation(country: Country) {
+fun CountryInformation(country: CountryModel) {
     ElevatedCard(
         modifier = Modifier.padding(16.dp).fillMaxWidth(),
         colors = CardDefaults.elevatedCardColors(containerColor = BackgroundTertiaryColor)

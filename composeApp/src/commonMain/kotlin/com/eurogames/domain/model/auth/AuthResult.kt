@@ -1,8 +1,8 @@
 package com.eurogames.domain.model.auth
 
-import com.eurogames.domain.model.User
+import com.eurogames.domain.model.UserModel
 
 data class AuthResult(
-    val user: User,
+    val user: UserModel,
     val token: String
 )

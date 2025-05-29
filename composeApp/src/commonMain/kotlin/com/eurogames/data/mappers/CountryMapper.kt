@@ -2,10 +2,10 @@ package com.eurogames.data.mappers
 
 import com.eurogames.data.remote.response.CountryDetailDto
 import com.eurogames.data.remote.response.CountryResponseDto
-import com.eurogames.domain.model.Country
+import com.eurogames.domain.model.CountryModel
 
-fun CountryResponseDto.toDomain(): Country = with(this) {
-    Country(
+fun CountryResponseDto.toDomain(): CountryModel = with(this) {
+    CountryModel(
         id = id,
         nameCommon = nameCommon,
         capital = capital,
@@ -14,8 +14,8 @@ fun CountryResponseDto.toDomain(): Country = with(this) {
     )
 }
 
-fun CountryDetailDto.toDomain(): Country = with(this) {
-    Country(
+fun CountryDetailDto.toDomain(): CountryModel = with(this) {
+    CountryModel(
         id = id,
         nameCommon = nameCommon,
         nameOfficial = nameOfficial,
