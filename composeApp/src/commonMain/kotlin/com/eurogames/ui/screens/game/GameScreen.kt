@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.eurogames.domain.enums.GameType
 import com.eurogames.domain.model.GameModel
 import com.eurogames.ui.core.utils.BackgroundPrimaryColor
@@ -151,6 +152,7 @@ fun GameCard(game: GameModel, onItemSelected: (GameModel) -> Unit) {
             Text(
                 text = game.name,
                 style = MaterialTheme.typography.titleLarge,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = DefaultTextColor,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -164,6 +166,7 @@ fun GameCard(game: GameModel, onItemSelected: (GameModel) -> Unit) {
                 }",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.DarkGray,
+                fontSize = 16.sp,
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -173,6 +176,7 @@ fun GameCard(game: GameModel, onItemSelected: (GameModel) -> Unit) {
                 text = game.description ?: "Sin descripción",
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 3,
+                fontSize = 16.sp,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 8.dp),
                 textAlign = TextAlign.Center
