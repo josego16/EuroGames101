@@ -3,8 +3,4 @@ package com.eurogames.domain.enums
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class QuestionType {
-    Flag_Quiz, Coat_Quiz, History_Quiz,
-    Geography_Quiz, Sports_Quiz,
-    Mythology_Quiz, General_Knowledge_Quiz
-}
+enum class QuestionType { Flag, Coat_of_arms, History, Geography, Sports, Mythology, General_Knowledge }
