@@ -31,20 +31,14 @@ fun SignInScreen(
     val signInViewModel = koinViewModel<SignInViewModel>()
     val state by signInViewModel.state.collectAsState()
 
-    var username by remember { mutableStateOf(state.savedUsername ?: "") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     var usernameError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
 
-    LaunchedEffect(state.savedUsername) {
-        if (!state.savedUsername.isNullOrBlank() && username.isBlank()) {
-            username = state.savedUsername ?: ""
-        }
-    }
-
     LaunchedEffect(state.user) {
-        if (state.user != null && state.error == null) {
+        if (state.user != null && state.errorUsername == null && state.errorPassword == null) {
             onLoginSuccess()
         }
     }
@@ -58,7 +52,9 @@ fun SignInScreen(
                     usernameError =
                         if (it.length < 3) "Username must be at least 3 characters" else ""
                 },
-                error = usernameError,
+                // Mostrar error de formato o error del backend SOLO de usuario
+                error = if (usernameError.isNotEmpty()) usernameError else (state.errorUsername
+                    ?: ""),
                 leadingIcon = { Icon(Icons.Rounded.AccountCircle, contentDescription = "Username") }
             )
             AuthTextField(
@@ -69,7 +65,9 @@ fun SignInScreen(
                     passwordError =
                         if (it.length < 6) "Password must be at least 6 characters" else ""
                 },
-                error = passwordError,
+                // Mostrar error de formato o error del backend SOLO de contraseña
+                error = if (passwordError.isNotEmpty()) passwordError else (state.errorPassword
+                    ?: ""),
                 isPassword = true,
                 leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = "Password") }
             )
@@ -77,9 +75,9 @@ fun SignInScreen(
                 text = "Sign In",
                 onClick = {
                     usernameError =
-                        if (username.isBlank() || username.length < 3) "Username must be at least 3 characters" else ""
+                        if (username.isBlank() || username.length < 5) "Username must be at least 3 characters" else ""
                     passwordError =
-                        if (password.isBlank() || password.length < 6) "Password must be at least 6 characters" else ""
+                        if (password.isBlank() || password.length <= 8) "Password must be at least 6 characters" else ""
 
                     if (usernameError.isEmpty() && passwordError.isEmpty()) {
                         signInViewModel.signIn(username, password)

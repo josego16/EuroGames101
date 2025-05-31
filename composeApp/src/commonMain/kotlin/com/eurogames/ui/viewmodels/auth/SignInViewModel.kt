@@ -5,66 +5,83 @@ import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
 import com.eurogames.domain.repository.TokenStoreRepository
 import com.eurogames.domain.usecase.auth.SignInUseCase
-import com.eurogames.session.DatastoreRepository
 import com.eurogames.session.SessionManager
 import com.eurogames.ui.state.SignInState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SignInViewModel(
     private val usecase: SignInUseCase,
-    private val tokenStore: TokenStoreRepository,
-    private val datastoreRepository: DatastoreRepository
+    private val tokenStore: TokenStoreRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(SignInState())
     val state: StateFlow<SignInState> = _state
 
     init {
         initializeState()
-        loadSavedUsername()
     }
 
     private fun initializeState() {
         _state.update { state -> state.copy(user = null) }
     }
 
-    private fun loadSavedUsername() {
-        viewModelScope.launch {
-            val savedUsername = datastoreRepository.getUsername().firstOrNull()
-            if (!savedUsername.isNullOrBlank()) {
-                _state.update { it.copy(savedUsername = savedUsername) }
-            }
-        }
-    }
-
     fun signIn(username: String, password: String) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+            _state.update { it.copy(isLoading = true, errorUsername = null, errorPassword = null) }
             val result = withContext(Dispatchers.IO) {
                 usecase(username, password)
             }
             when (result) {
                 is Result.Success -> {
                     tokenStore.saveToken(result.data.token)
-                    datastoreRepository.saveUsername(username)
                     SessionManager.userId = result.data.user.id
                     SessionManager.user = result.data.user
-                    _state.update { it.copy(user = result.data, isLoading = false, error = null) }
+                    _state.update {
+                        it.copy(
+                            user = result.data,
+                            isLoading = false,
+                            errorUsername = null,
+                            errorPassword = null
+                        )
+                    }
                 }
 
                 is Result.Error -> {
-                    _state.update {
-                        it.copy(
-                            user = null,
-                            isLoading = false,
-                            error = result.message
-                        )
+                    // Aquí puedes personalizar según el mensaje del backend
+                    val errorMsg = result.message.lowercase()
+                    if ("usuario" in errorMsg) {
+                        _state.update {
+                            it.copy(
+                                user = null,
+                                isLoading = false,
+                                errorUsername = "Usuario incorrecto",
+                                errorPassword = null
+                            )
+                        }
+                    } else if ("contraseña" in errorMsg || "password" in errorMsg) {
+                        _state.update {
+                            it.copy(
+                                user = null,
+                                isLoading = false,
+                                errorUsername = null,
+                                errorPassword = "Contraseña incorrecta"
+                            )
+                        }
+                    } else {
+                        // Si no se puede distinguir, mostrar ambos
+                        _state.update {
+                            it.copy(
+                                user = null,
+                                isLoading = false,
+                                errorUsername = "Usuario o contraseña incorrectos",
+                                errorPassword = "Usuario o contraseña incorrectos"
+                            )
+                        }
                     }
                 }
             }

@@ -32,7 +32,7 @@ class MiniGamesRepositoryImpl(private val apiService: MiniGamesApiService) : Min
         difficulty: Difficulty,
         category: QuestionType?
     ): Result<List<QuestionWithAnswerModel>> = runCatching {
-        apiService.getQuestionsWithAnswersByDifficulty(difficulty = difficulty, category = category).map { it.toDomain() }
+        apiService.getQuestionsWithAnswersForGames(difficulty = difficulty, category = category).map { it.toDomain() }
     }.fold(
         onSuccess = { Result.Success(it) },
         onFailure = { Result.Error(it.message ?: "Error desconocido", it) }

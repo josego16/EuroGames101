@@ -1,4 +1,4 @@
-package com.eurogames.ui.screens.logout
+package com.eurogames.ui.screens.user.auth
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

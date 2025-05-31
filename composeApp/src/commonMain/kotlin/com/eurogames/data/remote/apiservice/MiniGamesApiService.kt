@@ -24,7 +24,7 @@ class MiniGamesApiService(private val client: HttpClient) {
         }.getOrNull()
     }
 
-    suspend fun getQuestionsWithAnswersByDifficulty(
+    suspend fun getQuestionsWithAnswersForGames(
         difficulty: Difficulty,
         category: QuestionType? = null
     ): List<QuestionWithAnswersDto> {

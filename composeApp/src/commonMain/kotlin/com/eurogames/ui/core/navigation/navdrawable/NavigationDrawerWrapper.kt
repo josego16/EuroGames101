@@ -21,7 +21,7 @@ import com.eurogames.ui.screens.game.minigames.GuessTheFlagScreen
 import com.eurogames.ui.screens.game.minigames.QuizScreen
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
-import com.eurogames.ui.screens.logout.LogoutScreen
+import com.eurogames.ui.screens.user.auth.LogoutScreen
 import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
 import com.eurogames.ui.screens.user.profile.ProfileScreen
