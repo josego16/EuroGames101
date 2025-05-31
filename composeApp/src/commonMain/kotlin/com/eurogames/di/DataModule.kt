@@ -9,7 +9,7 @@ import com.eurogames.data.remote.paging.CountryPagingSource
 import com.eurogames.data.repository.AuthRepositoryImpl
 import com.eurogames.data.repository.CountryRepositoryImpl
 import com.eurogames.data.repository.GameRepositoryImpl
-import com.eurogames.data.repository.MinigamesRepositoryImpl
+import com.eurogames.data.repository.MiniGamesRepositoryImpl
 import com.eurogames.data.repository.TokenStoreRepositoryImpl
 import com.eurogames.data.repository.UserRepositoryImpl
 import com.eurogames.domain.repository.AuthRepository
@@ -71,6 +71,6 @@ val dataModule = module {
     factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStoreRepository = get()) }
     factory<CountryRepository> { CountryRepositoryImpl(get()) }
     factory<GameRepository> { GameRepositoryImpl(get()) }
-    factory<MiniGamesRepository> { MinigamesRepositoryImpl(get()) }
+    factory<MiniGamesRepository> { MiniGamesRepositoryImpl(get()) }
     factory<UserRepository> { UserRepositoryImpl(get()) }
 }

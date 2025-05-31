@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.eurogames.domain.enums.Difficulty
 import com.eurogames.ui.core.navigation.CountryDetail
 import com.eurogames.ui.core.navigation.GuessTheFlag
 import com.eurogames.ui.core.navigation.Quiz
@@ -89,12 +90,17 @@ fun NavigationDrawerWrapper(
         // GuessTheFlag type-safe route
         composable<GuessTheFlag> { navBackStackEntry ->
             val guessTheFlag: GuessTheFlag = navBackStackEntry.toRoute<GuessTheFlag>()
-            GuessTheFlagScreen(guessTheFlag.id)
+            val difficulty =
+                Difficulty.entries.getOrNull(guessTheFlag.id)
+                    ?: Difficulty.Easy
+            GuessTheFlagScreen(difficulty = difficulty)
         }
-        // GuessTheFlag type-safe route
+        // Quiz type-safe route
         composable<Quiz> { navBackStackEntry ->
             val quiz: Quiz = navBackStackEntry.toRoute<Quiz>()
-            QuizScreen(quiz.id)
+            val difficulty = Difficulty.entries.getOrNull(quiz.id)
+                ?: Difficulty.Easy
+            QuizScreen(difficulty = difficulty)
         }
 
         // ProfileItem

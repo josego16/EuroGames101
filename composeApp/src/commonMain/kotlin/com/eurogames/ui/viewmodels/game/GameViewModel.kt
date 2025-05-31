@@ -2,15 +2,14 @@ package com.eurogames.ui.viewmodels.game
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eurogames.Result
 import com.eurogames.domain.repository.GameRepository
 import com.eurogames.ui.state.GameState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class GameViewModel(
-    private val gameRepository: GameRepository
-) : ViewModel() {
+class GameViewModel(private val gameRepository: GameRepository) : ViewModel() {
 
     private val _state = MutableStateFlow(GameState())
     val state: StateFlow<GameState> = _state
@@ -20,7 +19,7 @@ class GameViewModel(
         viewModelScope.launch {
             val result = gameRepository.getAllGames()
             when (result) {
-                is com.eurogames.Result.Success -> {
+                is Result.Success -> {
                     _state.value = _state.value.copy(
                         games = result.data,
                         isLoading = false,
@@ -28,7 +27,7 @@ class GameViewModel(
                     )
                 }
 
-                is com.eurogames.Result.Error -> {
+                is Result.Error -> {
                     _state.value = _state.value.copy(
                         isLoading = false,
                         error = result.message
