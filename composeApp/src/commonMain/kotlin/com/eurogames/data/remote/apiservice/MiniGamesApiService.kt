@@ -15,6 +15,12 @@ class MiniGamesApiService(private val client: HttpClient) {
                 .body<List<QuestionWithAnswersDto>>()
         }.getOrDefault(emptyList())
     }
+    suspend fun getQuestionWithAnswersById(id: Int): QuestionWithAnswersDto? {
+        return runCatching {
+            client.get("/questionWithAnswer/$id")
+                .body<QuestionWithAnswersDto>()
+        }.getOrNull()
+    }
 
     suspend fun getQuestionsWithAnswersByDifficulty(difficulty: Difficulty): List<QuestionWithAnswersDto> {
         return runCatching {

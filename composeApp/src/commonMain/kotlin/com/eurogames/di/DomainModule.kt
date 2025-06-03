@@ -7,6 +7,7 @@ import com.eurogames.domain.usecase.country.GetCountryByIdUseCase
 import com.eurogames.domain.usecase.game.GetAllGamesUseCase
 import com.eurogames.domain.usecase.game.GetGameByIdUseCase
 import com.eurogames.domain.usecase.minigame.GetAllQuestionsWithAnswersUseCase
+import com.eurogames.domain.usecase.minigame.GetQuestionWithAnswersByIdUseCase
 import com.eurogames.domain.usecase.minigame.IsAnswerCorrectUseCase
 import com.eurogames.domain.usecase.minigame.QuestionWithAnswersByDifficultyUseCase
 import com.eurogames.domain.usecase.profile.GetAllUsersUseCase
@@ -30,6 +31,7 @@ val domainModule = module {
     factoryOf(::GetGameByIdUseCase)
 
     factoryOf(::GetAllQuestionsWithAnswersUseCase)
+    factoryOf(::GetQuestionWithAnswersByIdUseCase)
     factoryOf(::QuestionWithAnswersByDifficultyUseCase)
     factoryOf(::IsAnswerCorrectUseCase)
 }

@@ -8,7 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.eurogames.domain.enums.Difficulty
+import com.eurogames.domain.enums.GameType
+import com.eurogames.session.SessionManager.user
 import com.eurogames.ui.core.navigation.CountryDetail
 import com.eurogames.ui.core.navigation.GuessTheFlag
 import com.eurogames.ui.core.navigation.Quiz
@@ -16,11 +17,12 @@ import com.eurogames.ui.core.navigation.Routes
 import com.eurogames.ui.screens.country.CountryDetailScreen
 import com.eurogames.ui.screens.country.CountryScreen
 import com.eurogames.ui.screens.game.GameScreen
-import com.eurogames.ui.screens.game.minigames.GuessTheFlagScreen
-import com.eurogames.ui.screens.game.minigames.QuizScreen
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
+import com.eurogames.ui.screens.logout.LogoutScreen
+import com.eurogames.ui.screens.user.auth.SignInScreen
 import com.eurogames.ui.screens.user.auth.SignUpScreen
+import com.eurogames.ui.screens.user.profile.ProfileScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -69,17 +71,13 @@ fun NavigationDrawerWrapper(
                     GameScreen(
                         navigateToGame = { gameId, gameType ->
                             when (gameType) {
-                                com.eurogames.domain.enums.GameType.Guess_the_flag -> navController.navigate(
+                                GameType.Guess_the_flag -> navController.navigate(
                                     GuessTheFlag(gameId)
                                 )
 
-                                com.eurogames.domain.enums.GameType.Quiz -> navController.navigate(
+                                GameType.Quiz -> navController.navigate(
                                     Quiz(gameId)
                                 )
-
-                                else -> {
-                                    println("Unsupported game type: $gameType")
-                                }
                             }
                         }
                     )
@@ -87,29 +85,14 @@ fun NavigationDrawerWrapper(
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
         }
-        // GuessTheFlag type-safe route
-        composable<GuessTheFlag> { navBackStackEntry ->
-            val guessTheFlag: GuessTheFlag = navBackStackEntry.toRoute<GuessTheFlag>()
-            val difficulty =
-                Difficulty.entries.getOrNull(guessTheFlag.id)
-                    ?: Difficulty.Easy
-            GuessTheFlagScreen(difficulty = difficulty)
-        }
-        // Quiz type-safe route
-        composable<Quiz> { navBackStackEntry ->
-            val quiz: Quiz = navBackStackEntry.toRoute<Quiz>()
-            val difficulty = Difficulty.entries.getOrNull(quiz.id)
-                ?: Difficulty.Easy
-            QuizScreen(difficulty = difficulty)
-        }
 
         // ProfileItem
         composable(Routes.Profile.route) {
-            val user = com.eurogames.session.SessionManager.user
+            val user = user
             if (user != null) {
                 MainScreen(
                     screenTitle = "Profile",
-                    screenContent = { com.eurogames.ui.screens.user.profile.ProfileScreen(user) },
+                    screenContent = { ProfileScreen(user) },
                     onDrawerClick = { scope.launch { drawerState.open() } }
                 )
             } else {
@@ -119,12 +102,12 @@ fun NavigationDrawerWrapper(
 
         // LogoutItem
         composable(Routes.Logout.route) {
-            com.eurogames.ui.screens.logout.LogoutScreen(navController)
+            LogoutScreen(navController)
         }
 
         // SignIn
         composable(Routes.SignIn.route) {
-            com.eurogames.ui.screens.user.auth.SignInScreen(
+            SignInScreen(
                 onLoginSuccess = {
                     scope.launch { drawerState.close() }
                     navController.navigate(Routes.Home.route) {

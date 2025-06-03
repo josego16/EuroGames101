@@ -61,16 +61,16 @@ val dataModule = module {
     }
 
     factoryOf(::AuthApiService)
+    factoryOf(::UserApiService)
     factoryOf(::CountryApiService)
+    factoryOf(::CountryPagingSource)
     factoryOf(::GameApiService)
     factoryOf(::MiniGamesApiService)
-    factoryOf(::UserApiService)
-    factoryOf(::CountryPagingSource)
 
-    single<TokenStoreRepository> { TokenStoreRepositoryImpl() }
+    single<TokenStoreRepository> { TokenStoreRepositoryImpl(get()) }
     factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStoreRepository = get()) }
+    factory<UserRepository> { UserRepositoryImpl(get()) }
     factory<CountryRepository> { CountryRepositoryImpl(get()) }
     factory<GameRepository> { GameRepositoryImpl(get()) }
     factory<MiniGamesRepository> { MiniGamesRepositoryImpl(get()) }
-    factory<UserRepository> { UserRepositoryImpl(get()) }
 }

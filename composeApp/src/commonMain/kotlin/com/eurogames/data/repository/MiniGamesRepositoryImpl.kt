@@ -16,6 +16,17 @@ class MiniGamesRepositoryImpl(private val apiService: MiniGamesApiService) : Min
             onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
         )
 
+    override suspend fun getQuestionWithAnswersById(id: Int): Result<QuestionWithAnswerModel> =
+        runCatching {
+            apiService.getQuestionWithAnswersById(id)?.toDomain()
+        }.fold(
+            onSuccess = {
+                if (it != null) Result.Success(it)
+                else Result.Error("No se encontró la pregunta", null, Result.ErrorType.NotFound)
+            },
+            onFailure = { Result.Error(it.message ?: "Error desconocido", it) }
+        )
+
     override suspend fun getQuestionWithAnswersByDifficulty(difficulty: Difficulty): Result<List<QuestionWithAnswerModel>> =
         runCatching {
             apiService.getQuestionsWithAnswersByDifficulty(difficulty).map { it.toDomain() }

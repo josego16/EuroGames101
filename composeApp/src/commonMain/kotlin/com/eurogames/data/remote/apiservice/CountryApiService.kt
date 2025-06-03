@@ -21,7 +21,7 @@ class CountryApiService(private val client: HttpClient) {
         }.body<PaginatedResponseDto>()
     }
 
-    suspend fun getCountryById(id: String): CountryDetailDto? {
+    suspend fun getCountryById(id: Int): CountryDetailDto? {
         return runCatching {
             client.get("countries/$id").body<CountryDetailDto>()
         }.getOrNull()

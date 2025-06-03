@@ -24,7 +24,7 @@ class CountryRepositoryImpl(private val apiService: CountryApiService) : Country
         )
 
     override suspend fun getCountryById(id: Int): Result<CountryModel?> = runCatching {
-        apiService.getCountryById(id.toString())?.toDomain()
+        apiService.getCountryById(id)?.toDomain()
     }.fold(
         onSuccess = {
             if (it != null) Result.Success(it)

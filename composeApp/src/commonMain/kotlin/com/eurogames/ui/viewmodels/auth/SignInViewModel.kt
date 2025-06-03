@@ -5,29 +5,42 @@ import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
 import com.eurogames.domain.repository.TokenStoreRepository
 import com.eurogames.domain.usecase.auth.SignInUseCase
+import com.eurogames.session.DatastoreRepository
 import com.eurogames.session.SessionManager
 import com.eurogames.ui.state.SignInState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SignInViewModel(
     private val usecase: SignInUseCase,
-    private val tokenStore: TokenStoreRepository
+    private val tokenStore: TokenStoreRepository,
+    private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(SignInState())
     val state: StateFlow<SignInState> = _state
 
     init {
         initializeState()
+        loadSavedUsername()
     }
 
     private fun initializeState() {
         _state.update { state -> state.copy(user = null) }
+    }
+
+    private fun loadSavedUsername() {
+        viewModelScope.launch {
+            val savedUsername = datastoreRepository.getUsername().firstOrNull()
+            if (!savedUsername.isNullOrBlank()) {
+                _state.update { it.copy(savedUsername = savedUsername) }
+            }
+        }
     }
 
     fun signIn(username: String, password: String) {
@@ -39,6 +52,7 @@ class SignInViewModel(
             when (result) {
                 is Result.Success -> {
                     tokenStore.saveToken(result.data.token)
+                    datastoreRepository.saveUsername(username)
                     SessionManager.userId = result.data.user.id
                     SessionManager.user = result.data.user
                     _state.update { it.copy(user = result.data, isLoading = false, error = null) }

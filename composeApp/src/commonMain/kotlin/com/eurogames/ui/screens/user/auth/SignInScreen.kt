@@ -31,11 +31,17 @@ fun SignInScreen(
     val signInViewModel = koinViewModel<SignInViewModel>()
     val state by signInViewModel.state.collectAsState()
 
-    var username by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf(state.savedUsername ?: "") }
     var password by remember { mutableStateOf("") }
 
     var usernameError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
+
+    LaunchedEffect(state.savedUsername) {
+        if (!state.savedUsername.isNullOrBlank() && username.isBlank()) {
+            username = state.savedUsername ?: ""
+        }
+    }
 
     LaunchedEffect(state.user) {
         if (state.user != null && state.error == null) {
