@@ -2,6 +2,7 @@ package com.eurogames.data.remote.apiservice
 
 import com.eurogames.data.remote.response.QuestionWithAnswersDto
 import com.eurogames.domain.enums.Difficulty
+import com.eurogames.domain.enums.QuestionType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -15,6 +16,7 @@ class MiniGamesApiService(private val client: HttpClient) {
                 .body<List<QuestionWithAnswersDto>>()
         }.getOrDefault(emptyList())
     }
+
     suspend fun getQuestionWithAnswersById(id: Int): QuestionWithAnswersDto? {
         return runCatching {
             client.get("/questionWithAnswer/$id")
@@ -22,10 +24,15 @@ class MiniGamesApiService(private val client: HttpClient) {
         }.getOrNull()
     }
 
-    suspend fun getQuestionsWithAnswersByDifficulty(difficulty: Difficulty): List<QuestionWithAnswersDto> {
+    suspend fun getQuestionsWithAnswersByDifficulty(
+        difficulty: Difficulty,
+        category: QuestionType? = null
+    ): List<QuestionWithAnswersDto> {
         return runCatching {
-            client.get("/questionWithAnswer/difficulty/${difficulty.name}")
-                .body<List<QuestionWithAnswersDto>>()
+            client.get("/questionWithAnswer/filter") {
+                parameter("difficulty", difficulty.name)
+                if (category != null) parameter("category", category.name)
+            }.body<List<QuestionWithAnswersDto>>()
         }.getOrDefault(emptyList())
     }
 

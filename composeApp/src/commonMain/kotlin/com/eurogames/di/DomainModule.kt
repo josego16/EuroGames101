@@ -8,8 +8,8 @@ import com.eurogames.domain.usecase.game.GetAllGamesUseCase
 import com.eurogames.domain.usecase.game.GetGameByIdUseCase
 import com.eurogames.domain.usecase.minigame.GetAllQuestionsWithAnswersUseCase
 import com.eurogames.domain.usecase.minigame.GetQuestionWithAnswersByIdUseCase
+import com.eurogames.domain.usecase.minigame.GetQuestionWithAnswersForGamesUseCase
 import com.eurogames.domain.usecase.minigame.IsAnswerCorrectUseCase
-import com.eurogames.domain.usecase.minigame.QuestionWithAnswersByDifficultyUseCase
 import com.eurogames.domain.usecase.profile.GetAllUsersUseCase
 import com.eurogames.domain.usecase.profile.GetUserByIdUseCase
 import com.eurogames.domain.usecase.profile.UpdateUserUseCase
@@ -32,6 +32,6 @@ val domainModule = module {
 
     factoryOf(::GetAllQuestionsWithAnswersUseCase)
     factoryOf(::GetQuestionWithAnswersByIdUseCase)
-    factoryOf(::QuestionWithAnswersByDifficultyUseCase)
+    factoryOf(::GetQuestionWithAnswersForGamesUseCase)
     factoryOf(::IsAnswerCorrectUseCase)
 }
