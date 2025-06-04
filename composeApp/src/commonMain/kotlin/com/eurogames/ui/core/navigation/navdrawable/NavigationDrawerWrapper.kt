@@ -17,6 +17,8 @@ import com.eurogames.ui.core.navigation.Routes
 import com.eurogames.ui.screens.country.CountryDetailScreen
 import com.eurogames.ui.screens.country.CountryScreen
 import com.eurogames.ui.screens.game.GameScreen
+import com.eurogames.ui.screens.game.minigames.GuessTheFlagScreen
+import com.eurogames.ui.screens.game.minigames.QuizScreen
 import com.eurogames.ui.screens.home.HomeScreen
 import com.eurogames.ui.screens.home.MainScreen
 import com.eurogames.ui.screens.logout.LogoutScreen
@@ -84,6 +86,15 @@ fun NavigationDrawerWrapper(
                 },
                 onDrawerClick = { scope.launch { drawerState.open() } }
             )
+        }
+
+        // GuessTheFlagScreen
+        composable<GuessTheFlag> { navBackStackEntry ->
+            GuessTheFlagScreen()
+        }
+        // QuizScreen
+        composable<Quiz> { navBackStackEntry ->
+            QuizScreen()
         }
 
         // ProfileItem
