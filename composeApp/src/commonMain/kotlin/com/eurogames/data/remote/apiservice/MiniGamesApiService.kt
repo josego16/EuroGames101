@@ -1,5 +1,6 @@
 package com.eurogames.data.remote.apiservice
 
+import com.eurogames.data.remote.response.IsCorrectResponseDto
 import com.eurogames.data.remote.response.QuestionWithAnswersDto
 import com.eurogames.domain.enums.Difficulty
 import com.eurogames.domain.enums.QuestionType
@@ -41,7 +42,7 @@ class MiniGamesApiService(private val client: HttpClient) {
             client.get("/answers/isCorrect") {
                 parameter("questionId", questionId)
                 parameter("answerId", answerId)
-            }.body<Boolean>()
+            }.body<IsCorrectResponseDto>().isCorrect
         }.getOrDefault(false)
     }
 }

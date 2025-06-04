@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
 import com.eurogames.domain.enums.Difficulty
-import com.eurogames.domain.enums.GameMode
 import com.eurogames.domain.enums.QuestionType
 import com.eurogames.domain.repository.MiniGamesRepository
 import com.eurogames.ui.state.MiniGameState
@@ -19,43 +18,77 @@ class MinigamesViewModel(
     val state: StateFlow<MiniGameState> = _state
 
     init {
-        loadQuestions(Difficulty.Easy, null, GameMode.FREE)
+        loadQuestions(
+            difficulty = Difficulty.Easy,
+            category = null
+        )
     }
 
-    // --- Métodos de selección de modo, dificultad y categoría ---
-    fun setGameMode(mode: GameMode) {
-        _state.value = _state.value.copy(gameMode = mode)
-        loadQuestions(_state.value.selectedDifficulty, _state.value.selectedCategory, mode)
+    fun setNumQuestions(n: Int) {
+        val currentState = _state.value
+        _state.value = currentState.copy(numQuestions = n)
+        loadQuestions(
+            difficulty = Difficulty.Easy,
+            category = null,
+            numQuestions = n
+        )
     }
 
-    fun setDifficulty(difficulty: Difficulty) {
-        _state.value = _state.value.copy(selectedDifficulty = difficulty)
-        loadQuestions(difficulty, _state.value.selectedCategory, _state.value.gameMode)
-    }
+    private fun loadQuestions(
+        difficulty: Difficulty,
+        category: QuestionType?,
+        numQuestions: Int? = null
+    ) {
+        _state.value = _state.value.copy(isLoading = true, error = null)
+        viewModelScope.launch {
+            val result = miniGamesRepository.getQuestionWithAnswersForGames(difficulty, category)
+            when (result) {
+                is Result.Success -> {
+                    val limit = numQuestions ?: _state.value.numQuestions ?: 10
+                    val shuffled = result.data.shuffled()
+                    val limitedQuestions = shuffled.take(limit)
+                    _state.value = _state.value.copy(
+                        questions = limitedQuestions,
+                        currentQuestionIndex = 0,
+                        isLoading = false,
+                        error = null
+                    )
+                }
 
-    fun setCategory(category: QuestionType?) {
-        _state.value = _state.value.copy(selectedCategory = category)
-        loadQuestions(_state.value.selectedDifficulty, category, _state.value.gameMode)
-    }
-
-    // --- Navegación de preguntas ---
-    fun nextQuestion() {
-        val currentIndex = _state.value.currentQuestionIndex
-        val totalQuestions = _state.value.questions.size
-        if (currentIndex < totalQuestions - 1) {
-            _state.value = _state.value.copy(
-                currentQuestionIndex = currentIndex + 1,
-                selectedAnswerId = null,
-                isAnswerCorrect = null
-            )
+                is Result.Error -> {
+                    _state.value = _state.value.copy(
+                        error = result.message,
+                        isLoading = false
+                    )
+                }
+            }
         }
     }
 
-    // --- Selección y comprobación de respuesta ---
+    fun nextQuestion() {
+        val current = _state.value.currentQuestionIndex
+        val last = _state.value.questions.size - 1
+        if (current < last) {
+            _state.value = _state.value.copy(currentQuestionIndex = current + 1)
+        }
+    }
+
+    fun prevQuestion() {
+        val current = _state.value.currentQuestionIndex
+        if (current > 0) {
+            _state.value = _state.value.copy(currentQuestionIndex = current - 1)
+        }
+    }
+
     fun selectAnswer(answerId: Int) {
         val currentQuestion = _state.value.questions.getOrNull(_state.value.currentQuestionIndex)
         if (currentQuestion != null) {
-            _state.value = _state.value.copy(selectedAnswerId = answerId, isLoading = true)
+            _state.value = _state.value.copy(
+                isLoading = true,
+                selectedAnswerId = answerId,
+                isAnswerCorrect = null,
+                error = null
+            )
             viewModelScope.launch {
                 val result =
                     miniGamesRepository.isAnswerCorrect(currentQuestion.question.id, answerId)
@@ -73,57 +106,6 @@ class MinigamesViewModel(
                             isLoading = false
                         )
                     }
-                }
-            }
-        }
-    }
-
-    // --- Lógica de desbloqueo de dificultades ---
-    fun unlockNextDifficulty() {
-        val currentCategory = _state.value.selectedCategory
-        val currentDifficulty = _state.value.selectedDifficulty
-        val nextDifficulty = when (currentDifficulty) {
-            Difficulty.Easy -> Difficulty.Medium
-            Difficulty.Medium -> Difficulty.Hard
-            Difficulty.Hard -> null
-        }
-        if (nextDifficulty != null) {
-            val updatedUnlocked = _state.value.unlockedDifficulties.toMutableMap()
-            val currentSet =
-                updatedUnlocked[currentCategory]?.toMutableSet() ?: mutableSetOf(currentDifficulty)
-            currentSet.add(nextDifficulty)
-            updatedUnlocked[currentCategory] = currentSet
-            _state.value = _state.value.copy(unlockedDifficulties = updatedUnlocked)
-        }
-    }
-
-    // --- Carga de preguntas ---
-    private fun loadQuestions(difficulty: Difficulty, category: QuestionType?, mode: GameMode) {
-        _state.value = _state.value.copy(isLoading = true, error = null)
-        viewModelScope.launch {
-            val result = if (mode == GameMode.FREE) {
-                miniGamesRepository.getQuestionWithAnswersForGames(difficulty)
-            } else {
-                miniGamesRepository.getQuestionWithAnswersForGames(difficulty, category)
-            }
-            when (result) {
-                is Result.Success -> {
-                    _state.value = _state.value.copy(
-                        questions = result.data,
-                        currentQuestionIndex = 0,
-                        selectedAnswerId = null,
-                        isAnswerCorrect = null,
-                        isLoading = false,
-                        error = null
-                    )
-                }
-
-                is Result.Error -> {
-                    result.cause?.printStackTrace()
-                    _state.value = _state.value.copy(
-                        error = result.message,
-                        isLoading = false
-                    )
                 }
             }
         }

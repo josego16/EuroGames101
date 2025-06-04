@@ -9,3 +9,6 @@ data class AnswerResponseDto(
     val text: String,
     val isCorrect: Boolean
 )
+
+@Serializable
+data class IsCorrectResponseDto(val isCorrect: Boolean)
