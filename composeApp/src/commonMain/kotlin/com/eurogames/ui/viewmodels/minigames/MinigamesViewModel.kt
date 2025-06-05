@@ -11,11 +11,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MinigamesViewModel(
-    private val miniGamesRepository: MiniGamesRepository
-) : ViewModel() {
+class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) : ViewModel() {
     private val _state = MutableStateFlow(MiniGameState())
     val state: StateFlow<MiniGameState> = _state
+
+    private var selectedDifficulty: Difficulty = Difficulty.Easy
+    private var selectedCategory: QuestionType = QuestionType.General_Knowledge
 
     init {
         loadQuestions(
@@ -28,24 +29,37 @@ class MinigamesViewModel(
         val currentState = _state.value
         _state.value = currentState.copy(numQuestions = n)
         loadQuestions(
-            difficulty = Difficulty.Easy,
-            category = null,
+            difficulty = selectedDifficulty,
+            category = selectedCategory,
             numQuestions = n
         )
     }
 
-    private fun loadQuestions(
+    fun setDifficulty(difficulty: Difficulty) {
+        selectedDifficulty = difficulty
+    }
+
+    fun setCategory(category: QuestionType) {
+        selectedCategory = category
+    }
+
+    fun loadQuestions(
         difficulty: Difficulty,
         category: QuestionType?,
         numQuestions: Int? = null
     ) {
+        selectedDifficulty = difficulty
+        selectedCategory = category ?: QuestionType.General_Knowledge
         _state.value = _state.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             val result = miniGamesRepository.getQuestionWithAnswersForGames(difficulty, category)
             when (result) {
                 is Result.Success -> {
                     val limit = numQuestions ?: _state.value.numQuestions ?: 10
-                    val shuffled = result.data.shuffled()
+                    val filtered = result.data.filter {
+                        it.question.questionType != QuestionType.Flag && it.question.questionType != QuestionType.Coat_of_arms
+                    }
+                    val shuffled = filtered.shuffled()
                     val limitedQuestions = shuffled.take(limit)
                     _state.value = _state.value.copy(
                         questions = limitedQuestions,

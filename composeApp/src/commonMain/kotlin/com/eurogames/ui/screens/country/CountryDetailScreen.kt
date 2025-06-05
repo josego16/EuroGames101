@@ -67,22 +67,16 @@ fun CountryDetailScreen(countryId: Int) {
     AppTheme {
         Column(modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor)) {
             state.selectedCountry?.let { country ->
-                MainHeader(country)
+                CountryDetailHeader(country)
                 Spacer(modifier = Modifier.height(16.dp))
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                        .clip(RoundedCornerShape(topStartPercent = 10, topEndPercent = 10))
-                        .background(BackgroundSecondaryColor)
-                ) {
-                    CountryInformation(country)
-                }
+                CountryDetailContent(country)
             }
         }
     }
 }
 
 @Composable
-fun MainHeader(country: CountryModel) {
+fun CountryDetailHeader(country: CountryModel) {
     Box(modifier = Modifier.fillMaxWidth().height(300.dp)) {
         Image(
             painter = painterResource(Res.drawable.blueSky),
@@ -90,22 +84,19 @@ fun MainHeader(country: CountryModel) {
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        CountryHeader(country)
+        CountryFlagShieldFlip(country)
     }
 }
 
 @Composable
-fun CountryHeader(country: CountryModel) {
+fun CountryFlagShieldFlip(country: CountryModel) {
     val continent = country.continents.firstOrNull() ?: "Unknown"
-
     var isFlipped by remember { mutableStateOf(false) }
     var showFlag by remember { mutableStateOf(true) }
     val rotationY by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
         animationSpec = tween(durationMillis = 400), label = "rotationY"
     )
-
-    // Cambia la imagen cuando la animación pasa por 90 grados
     LaunchedEffect(rotationY) {
         if (rotationY > 90f && showFlag) {
             showFlag = false
@@ -113,7 +104,6 @@ fun CountryHeader(country: CountryModel) {
             showFlag = true
         }
     }
-
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Column(
             modifier = Modifier
@@ -143,9 +133,7 @@ fun CountryHeader(country: CountryModel) {
                         .size(205.dp)
                         .clip(RoundedCornerShape(30.dp))
                         .background(Color.Black.copy(alpha = 0.15f))
-                        .clickable {
-                            isFlipped = !isFlipped
-                        }
+                        .clickable { isFlipped = !isFlipped }
                         .graphicsLayer { this.rotationY = rotationY },
                     contentAlignment = Alignment.Center
                 ) {
@@ -188,47 +176,52 @@ fun CountryHeader(country: CountryModel) {
 }
 
 @Composable
-fun CountryInformation(country: CountryModel) {
+fun CountryDetailContent(country: CountryModel) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(topStartPercent = 10, topEndPercent = 10))
+            .background(BackgroundSecondaryColor)
+    ) {
+        CountryInformationCard(country)
+    }
+}
+
+@Composable
+fun CountryInformationCard(country: CountryModel) {
     ElevatedCard(
         modifier = Modifier.padding(16.dp).fillMaxWidth(),
         colors = CardDefaults.elevatedCardColors(containerColor = BackgroundTertiaryColor)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text("About Countries", color = DefaultTextColor)
-
             Spacer(Modifier.height(6.dp))
             InformationDetail(
                 "Capital: ",
                 if (country.capital.isEmpty()) "N/A" else country.capital.joinToString()
             )
-
             Spacer(Modifier.height(2.dp))
             InformationDetail("Region: ", if (country.region.isEmpty()) "N/A" else country.region)
-
             Spacer(Modifier.height(2.dp))
             InformationDetail(
                 "Subregion: ",
                 if (country.subregion.isEmpty()) "N/A" else country.subregion
             )
-
             Spacer(Modifier.height(2.dp))
             InformationDetail(
                 "Population: ",
                 if (country.population == 0L) "N/A" else "${country.population} habitantes"
             )
-
             Spacer(Modifier.height(2.dp))
             InformationDetail(
                 "Timezones: ",
                 if (country.timezones.isEmpty()) "N/A" else country.timezones.joinToString()
             )
-
             Spacer(Modifier.height(2.dp))
             InformationDetail(
                 "Continents: ",
                 if (country.continents.isEmpty()) "N/A" else country.continents.joinToString()
             )
-
             Spacer(Modifier.height(2.dp))
             InformationDetail(
                 "Start of Week: ",

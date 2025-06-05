@@ -59,55 +59,95 @@ fun CountryScreen(navigateToDetail: (Int) -> Unit) {
     ) {
         when {
             state.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CountryLoadingSection()
             }
 
             state.error != null -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "Error: ${state.error}",
-                        textAlign = TextAlign.Center,
-                        color = Color.Red,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                CountryErrorSection(state.error)
             }
 
             else -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    LazyColumn(
-                        modifier = Modifier.weight(1f).fillMaxWidth(),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        contentPadding = PaddingValues(vertical = 24.dp)
-                    ) {
-                        items(state.countries) { country ->
-                            CountryCard(
-                                country = country,
-                                onItemSelected = { detail ->
-                                    navigateToDetail(detail.id)
-                                }
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    PaginationBar(
-                        currentPage = state.currentPage,
-                        totalPages = state.totalPages,
-                        onPrev = { countryViewModel.prevPage() },
-                        onNext = { countryViewModel.nextPage() },
-                        onPageSelected = { countryViewModel.goToPage(it) }
-                    )
-                }
+                CountryContentSection(
+                    countries = state.countries,
+                    onItemSelected = { detail -> navigateToDetail(detail.id) },
+                    currentPage = state.currentPage,
+                    totalPages = state.totalPages,
+                    onPrev = { countryViewModel.prevPage() },
+                    onNext = { countryViewModel.nextPage() },
+                    onPageSelected = { countryViewModel.goToPage(it) }
+                )
             }
+        }
+    }
+}
+
+@Composable
+fun CountryLoadingSection() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun CountryErrorSection(error: String?) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Error: ${error ?: "Desconocido"}",
+            textAlign = TextAlign.Center,
+            color = Color.Red,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun CountryContentSection(
+    countries: List<CountryModel>,
+    onItemSelected: (CountryModel) -> Unit,
+    currentPage: Int,
+    totalPages: Int,
+    onPrev: () -> Unit,
+    onNext: () -> Unit,
+    onPageSelected: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CountryListSection(countries, onItemSelected, Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(8.dp))
+        CountryPaginationBar(
+            currentPage = currentPage,
+            totalPages = totalPages,
+            onPrev = onPrev,
+            onNext = onNext,
+            onPageSelected = onPageSelected
+        )
+    }
+}
+
+@Composable
+fun CountryListSection(
+    countries: List<CountryModel>,
+    onItemSelected: (CountryModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(vertical = 24.dp)
+    ) {
+        items(countries) { country ->
+            CountryCard(
+                country = country,
+                onItemSelected = onItemSelected
+            )
         }
     }
 }
@@ -182,7 +222,7 @@ fun CountryCard(country: CountryModel, onItemSelected: (CountryModel) -> Unit) {
 }
 
 @Composable
-fun PaginationBar(
+fun CountryPaginationBar(
     currentPage: Int,
     totalPages: Int,
     onPrev: () -> Unit,

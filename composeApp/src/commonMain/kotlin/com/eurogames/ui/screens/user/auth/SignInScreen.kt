@@ -1,6 +1,10 @@
 package com.eurogames.ui.screens.user.auth
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
@@ -13,7 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.screens.user.auth.components.AuthButton
@@ -43,53 +50,86 @@ fun SignInScreen(
         }
     }
     AppTheme {
-        AuthScreenContainer(title = "Sign In") {
-            AuthTextField(
-                label = "Username",
-                value = username,
-                onValueChange = {
-                    username = it
-                    usernameError =
-                        if (it.length < 3) "Username must be at least 3 characters" else ""
-                },
-                // Mostrar error de formato o error del backend SOLO de usuario
-                error = if (usernameError.isNotEmpty()) usernameError else (state.errorUsername
-                    ?: ""),
-                leadingIcon = { Icon(Icons.Rounded.AccountCircle, contentDescription = "Username") }
-            )
-            AuthTextField(
-                label = "Password",
-                value = password,
-                onValueChange = {
-                    password = it
-                    passwordError =
-                        if (it.length < 6) "Password must be at least 6 characters" else ""
-                },
-                // Mostrar error de formato o error del backend SOLO de contraseña
-                error = if (passwordError.isNotEmpty()) passwordError else (state.errorPassword
-                    ?: ""),
-                isPassword = true,
-                leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = "Password") }
-            )
-            AuthButton(
-                text = "Sign In",
-                onClick = {
-                    usernameError =
-                        if (username.isBlank() || username.length < 5) "Username must be at least 3 characters" else ""
-                    passwordError =
-                        if (password.isBlank() || password.length <= 8) "Password must be at least 6 characters" else ""
-
-                    if (usernameError.isEmpty() && passwordError.isEmpty()) {
-                        signInViewModel.signIn(username, password)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF232526),
+                            Color(0xFF414345)
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            AuthScreenContainer(
+                title = "Iniciar sesión",
+                icon = Icons.Rounded.AccountCircle
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                AuthTextField(
+                    label = "Usuario",
+                    value = username,
+                    onValueChange = {
+                        username = it
+                        usernameError =
+                            if (it.length < 3) "El usuario debe tener al menos 3 caracteres" else ""
+                    },
+                    error = if (usernameError.isNotEmpty()) usernameError else (state.errorUsername
+                        ?: ""),
+                    leadingIcon = {
+                        Icon(
+                            Icons.Rounded.AccountCircle,
+                            contentDescription = "Usuario",
+                            tint = Color(0xFF0072FF)
+                        )
                     }
-                }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Spacer(modifier = Modifier.height(8.dp))
-            AuthLabeledText("Don't have an account?", "Sign up now!", onClick = onSignUpClick)
-
-            Spacer(modifier = Modifier.height(8.dp))
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                AuthTextField(
+                    label = "Contraseña",
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        passwordError =
+                            if (it.length < 6) "La contraseña debe tener al menos 6 caracteres" else ""
+                    },
+                    error = if (passwordError.isNotEmpty()) passwordError else (state.errorPassword
+                        ?: ""),
+                    isPassword = true,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Rounded.Lock,
+                            contentDescription = "Contraseña",
+                            tint = Color(0xFF0072FF)
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(18.dp))
+                AuthButton(
+                    text = "Entrar",
+                    onClick = {
+                        usernameError =
+                            if (username.isBlank() || username.length < 3) "El usuario debe tener al menos 3 caracteres" else ""
+                        passwordError =
+                            if (password.isBlank() || password.length < 6) "La contraseña debe tener al menos 6 caracteres" else ""
+                        if (usernameError.isEmpty() && passwordError.isEmpty()) {
+                            signInViewModel.signIn(username, password)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                )
+                Spacer(modifier = Modifier.height(14.dp))
+                AuthLabeledText(
+                    text = "¿No tienes cuenta?",
+                    clickableText = "Regístrate aquí",
+                    onClick = onSignUpClick
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+            }
         }
     }
 }

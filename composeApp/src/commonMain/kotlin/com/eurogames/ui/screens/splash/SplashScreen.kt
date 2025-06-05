@@ -28,8 +28,8 @@ fun SplashScreen() {
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.secondary
+                        Color(0xFF232526), // Gris oscuro
+                        Color(0xFF414345)  // Gris más claro
                     )
                 )
             ),
@@ -39,19 +39,31 @@ fun SplashScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(Color(0xFF00C6FF), Color(0xFF0072FF)),
+                            radius = 180f
+                        ),
+                        shape = MaterialTheme.shapes.extraLarge
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(90.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                    strokeWidth = 7.dp
+                    modifier = Modifier.size(70.dp),
+                    color = Color.White,
+                    strokeWidth = 6.dp
                 )
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Cargando...",
-                color = Color.White,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
+                color = Color(0xFFE0E0E0),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.2.sp
             )
         }
     }

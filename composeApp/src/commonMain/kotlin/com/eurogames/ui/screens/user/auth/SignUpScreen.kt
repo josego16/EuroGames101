@@ -1,6 +1,10 @@
 package com.eurogames.ui.screens.user.auth
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
@@ -15,7 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.eurogames.domain.model.auth.SignUpFormData
 import com.eurogames.ui.core.utils.AppTheme
@@ -44,104 +51,164 @@ fun SignUpScreen(onBackToSignIn: () -> Unit) {
     var confirmPasswordError by remember { mutableStateOf("") }
 
     AppTheme {
-        AuthScreenContainer(title = "Sign Up") {
-            AuthTextField(
-                label = "Full Name",
-                value = fullName,
-                onValueChange = {
-                    fullName = it
-                    fullNameError =
-                        if (it.length < 3) "Full Name must be at least 3 characters" else ""
-                },
-                error = fullNameError,
-                leadingIcon = { Icon(Icons.Rounded.Person, contentDescription = "Full Name") }
-            )
-            AuthTextField(
-                label = "Username",
-                value = username,
-                onValueChange = {
-                    username = it
-                    usernameError =
-                        if (it.length < 3) "Username must be at least 3 characters" else ""
-                },
-                error = usernameError,
-                leadingIcon = { Icon(Icons.Rounded.AccountCircle, contentDescription = "Username") }
-            )
-            AuthTextField(
-                label = "Email",
-                value = email,
-                onValueChange = {
-                    email = it
-                    emailError =
-                        if (!it.contains("@") || !it.contains(".")) "Invalid email format" else ""
-                },
-                error = emailError,
-                leadingIcon = { Icon(Icons.Rounded.Email, contentDescription = "Email") }
-            )
-            AuthTextField(
-                label = "Password",
-                value = password,
-                onValueChange = {
-                    password = it
-                    passwordError =
-                        if (it.length < 6) "Password must be at least 6 characters" else ""
-                },
-                error = passwordError,
-                isPassword = true,
-                leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = "Password") }
-            )
-            AuthTextField(
-                label = "Confirm Password",
-                value = confirmPassword,
-                onValueChange = {
-                    confirmPassword = it
-                    confirmPasswordError = if (it != password) "Passwords do not match" else ""
-                },
-                error = confirmPasswordError,
-                isPassword = true,
-                leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = "Confirm Password") }
-            )
-            AuthButton(
-                text = "Sign Up",
-                onClick = {
-                    fullNameError =
-                        if (fullName.isBlank() || fullName.length < 3) "Full Name must be at least 3 characters" else ""
-                    usernameError =
-                        if (username.isBlank() || username.length < 3) "Username must be at least 3 characters" else ""
-                    emailError =
-                        if (email.isBlank() || !email.contains("@") || !email.contains(".")) "Invalid email format" else ""
-                    passwordError =
-                        if (password.isBlank() || password.length < 6) "Password must be at least 6 characters" else ""
-                    confirmPasswordError = when {
-                        confirmPassword.isBlank() -> "Confirm password is required"
-                        confirmPassword != password -> "Passwords do not match"
-                        else -> ""
-                    }
-
-                    if (listOf(
-                            fullNameError,
-                            usernameError,
-                            emailError,
-                            passwordError,
-                            confirmPasswordError
-                        ).all { it.isEmpty() }
-                    ) {
-                        signUpViewModel.signUp(
-                            SignUpFormData(
-                                fullName,
-                                username,
-                                email,
-                                password,
-                                confirmPassword
-                            )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF232526),
+                            Color(0xFF414345)
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            AuthScreenContainer(
+                title = "Crear cuenta",
+                icon = Icons.Rounded.Person
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                AuthTextField(
+                    label = "Nombre completo",
+                    value = fullName,
+                    onValueChange = {
+                        fullName = it
+                        fullNameError =
+                            if (it.length < 3) "El nombre debe tener al menos 3 caracteres" else ""
+                    },
+                    error = fullNameError,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Rounded.Person,
+                            contentDescription = "Nombre completo",
+                            tint = Color(0xFF0072FF)
                         )
                     }
-                }
-            )
-            AuthLabeledText("Already have an account?", "Sign in now!", onClick = onBackToSignIn)
-            Spacer(modifier = Modifier.height(8.dp))
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                AuthTextField(
+                    label = "Usuario",
+                    value = username,
+                    onValueChange = {
+                        username = it
+                        usernameError =
+                            if (it.length < 3) "El usuario debe tener al menos 3 caracteres" else ""
+                    },
+                    error = usernameError,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Rounded.AccountCircle,
+                            contentDescription = "Usuario",
+                            tint = Color(0xFF0072FF)
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                AuthTextField(
+                    label = "Correo electrónico",
+                    value = email,
+                    onValueChange = {
+                        email = it
+                        emailError =
+                            if (!it.contains("@") || !it.contains(".")) "Introduce un correo válido" else ""
+                    },
+                    error = emailError,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Rounded.Email,
+                            contentDescription = "Correo electrónico",
+                            tint = Color(0xFF0072FF)
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                AuthTextField(
+                    label = "Contraseña",
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        passwordError =
+                            if (it.length < 6) "La contraseña debe tener al menos 6 caracteres" else ""
+                    },
+                    error = passwordError,
+                    isPassword = true,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Rounded.Lock,
+                            contentDescription = "Contraseña",
+                            tint = Color(0xFF0072FF)
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                AuthTextField(
+                    label = "Repite la contraseña",
+                    value = confirmPassword,
+                    onValueChange = {
+                        confirmPassword = it
+                        confirmPasswordError =
+                            if (it != password) "Las contraseñas no coinciden" else ""
+                    },
+                    error = confirmPasswordError,
+                    isPassword = true,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Rounded.Lock,
+                            contentDescription = "Repite la contraseña",
+                            tint = Color(0xFF0072FF)
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(18.dp))
+                AuthButton(
+                    text = "Registrarme",
+                    onClick = {
+                        fullNameError =
+                            if (fullName.isBlank() || fullName.length < 3) "El nombre debe tener al menos 3 caracteres" else ""
+                        usernameError =
+                            if (username.isBlank() || username.length < 3) "El usuario debe tener al menos 3 caracteres" else ""
+                        emailError =
+                            if (email.isBlank() || !email.contains("@") || !email.contains(".")) "Introduce un correo válido" else ""
+                        passwordError =
+                            if (password.isBlank() || password.length < 6) "La contraseña debe tener al menos 6 caracteres" else ""
+                        confirmPasswordError = when {
+                            confirmPassword.isBlank() -> "Repite la contraseña"
+                            confirmPassword != password -> "Las contraseñas no coinciden"
+                            else -> ""
+                        }
+                        if (listOf(
+                                fullNameError,
+                                usernameError,
+                                emailError,
+                                passwordError,
+                                confirmPasswordError
+                            ).all { it.isEmpty() }
+                        ) {
+                            signUpViewModel.signUp(
+                                SignUpFormData(
+                                    fullName,
+                                    username,
+                                    email,
+                                    password,
+                                    confirmPassword
+                                )
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                )
+                Spacer(modifier = Modifier.height(14.dp))
+                AuthLabeledText(
+                    text = "¿Ya tienes cuenta?",
+                    clickableText = "Inicia sesión",
+                    onClick = onBackToSignIn
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+            }
         }
-
         LaunchedEffect(state.isSuccess) {
             if (state.isSuccess) {
                 onBackToSignIn()
