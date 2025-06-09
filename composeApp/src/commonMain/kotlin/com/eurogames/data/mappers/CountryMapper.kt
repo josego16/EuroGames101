@@ -14,7 +14,7 @@ fun CountryResponseDto.toDomain(): CountryModel = with(this) {
     )
 }
 
-fun CountryDetailDto.toDomain(): CountryModel = with(this) {
+fun CountryDetailDto.toDetail(): CountryModel = with(this) {
     CountryModel(
         id = id,
         nameCommon = nameCommon,

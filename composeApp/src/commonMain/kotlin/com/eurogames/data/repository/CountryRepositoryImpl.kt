@@ -1,6 +1,7 @@
 package com.eurogames.data.repository
 
 import com.eurogames.Result
+import com.eurogames.data.mappers.toDetail
 import com.eurogames.data.mappers.toDomain
 import com.eurogames.data.remote.apiservice.CountryApiService
 import com.eurogames.data.remote.response.PaginatedResponseDto
@@ -24,7 +25,7 @@ class CountryRepositoryImpl(private val apiService: CountryApiService) : Country
         )
 
     override suspend fun getCountryById(id: Int): Result<CountryModel?> = runCatching {
-        apiService.getCountryById(id)?.toDomain()
+        apiService.getCountryById(id)?.toDetail()
     }.fold(
         onSuccess = {
             if (it != null) Result.Success(it)
