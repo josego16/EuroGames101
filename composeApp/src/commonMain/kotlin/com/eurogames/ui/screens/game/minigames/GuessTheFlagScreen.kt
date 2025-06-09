@@ -124,7 +124,7 @@ fun GuessTheFlagConfigSection(
     val numQuestionsOptions = listOf(5, 10, 15, 20)
     val difficultyOptions = Difficulty.entries
     val categoryOptions = QuestionType.entries.filter {
-        it != QuestionType.Banderas && it != QuestionType.Escudos
+        it == QuestionType.Banderas || it == QuestionType.Escudos
     }
 
     Text(
@@ -298,6 +298,7 @@ fun GuessTheFlagContentSection(
             if (currentQuestion != null) {
                 GuessTheFlagCard(
                     flagUrl = currentQuestion.question.flagUrl,
+                    coatUrl = currentQuestion.question.coatUrl,
                     question = currentQuestion.question.statement,
                     answers = currentQuestion.answer.map { it.text },
                     selectedAnswerIndex = state.selectedAnswerId?.let { id ->
@@ -353,6 +354,7 @@ fun GuessTheFlagNavigationSection(
 @Composable
 fun GuessTheFlagCard(
     flagUrl: String?,
+    coatUrl: String?,
     question: String,
     answers: List<String>,
     selectedAnswerIndex: Int?,
@@ -360,24 +362,29 @@ fun GuessTheFlagCard(
     onAnswerSelected: (Int) -> Unit,
     isLoading: Boolean
 ) {
+    val imageUrl = flagUrl.takeUnless { it.isNullOrBlank() } ?: coatUrl
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (!flagUrl.isNullOrBlank()) {
+        Text(
+            text = question,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            modifier = Modifier.padding(bottom = 32.dp)
+        )
+        Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+
+        if (!imageUrl.isNullOrBlank()) {
             AsyncImage(
-                model = flagUrl,
-                contentDescription = "Bandera",
+                model = imageUrl,
+                contentDescription = "Imagen de bandera o escudo",
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .padding(bottom = 16.dp)
             )
         }
-        Text(
-            text = question,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp)

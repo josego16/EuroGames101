@@ -56,9 +56,14 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
             when (result) {
                 is Result.Success -> {
                     val limit = numQuestions ?: _state.value.numQuestions ?: 10
-                    val filtered = result.data.filter {
-                        it.question.questionType != QuestionType.Banderas && it.question.questionType != QuestionType.Escudos
-                    }
+                    val filtered =
+                        if (selectedCategory != QuestionType.Banderas && selectedCategory != QuestionType.Escudos) {
+                            result.data.filter {
+                                it.question.questionType != QuestionType.Banderas && it.question.questionType != QuestionType.Escudos
+                            }
+                        } else {
+                            result.data
+                        }
                     val shuffled = filtered.shuffled()
                     val limitedQuestions = shuffled.take(limit)
                     _state.value = _state.value.copy(
