@@ -15,12 +15,12 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
     private val _state = MutableStateFlow(MiniGameState())
     val state: StateFlow<MiniGameState> = _state
 
-    private var selectedDifficulty: Difficulty = Difficulty.Easy
-    private var selectedCategory: QuestionType = QuestionType.General_Knowledge
+    private var selectedDifficulty: Difficulty = Difficulty.Facil
+    private var selectedCategory: QuestionType = QuestionType.Conocimiento_general
 
     init {
         loadQuestions(
-            difficulty = Difficulty.Easy,
+            difficulty = Difficulty.Facil,
             category = null
         )
     }
@@ -49,7 +49,7 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
         numQuestions: Int? = null
     ) {
         selectedDifficulty = difficulty
-        selectedCategory = category ?: QuestionType.General_Knowledge
+        selectedCategory = category ?: QuestionType.Conocimiento_general
         _state.value = _state.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             val result = miniGamesRepository.getQuestionWithAnswersForGames(difficulty, category)
@@ -57,7 +57,7 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
                 is Result.Success -> {
                     val limit = numQuestions ?: _state.value.numQuestions ?: 10
                     val filtered = result.data.filter {
-                        it.question.questionType != QuestionType.Flag && it.question.questionType != QuestionType.Coat_of_arms
+                        it.question.questionType != QuestionType.Banderas && it.question.questionType != QuestionType.Escudos
                     }
                     val shuffled = filtered.shuffled()
                     val limitedQuestions = shuffled.take(limit)

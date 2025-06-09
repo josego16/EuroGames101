@@ -203,7 +203,7 @@ fun GameCard(game: GameModel, onItemSelected: (GameModel) -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 val icon = when (game.gameType) {
-                    GameType.Guess_the_flag -> "🇪🇺"
+                    GameType.Adivinar_banderas -> "🇪🇺"
                     GameType.Quiz -> "❓"
                 }
                 Text(

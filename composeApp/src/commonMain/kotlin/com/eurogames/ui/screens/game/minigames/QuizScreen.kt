@@ -44,12 +44,11 @@ import androidx.compose.ui.unit.sp
 import com.eurogames.domain.enums.Difficulty
 import com.eurogames.domain.enums.QuestionType
 import com.eurogames.ui.core.utils.AppTheme
+import com.eurogames.ui.core.utils.Green
+import com.eurogames.ui.core.utils.Pink
 import com.eurogames.ui.state.MiniGameState
 import com.eurogames.ui.viewmodels.minigames.MinigamesViewModel
 import org.koin.compose.viewmodel.koinViewModel
-
-val Pink = Color(0xFFEC407A)
-val Green = Color(0xFF66BB6A)
 
 @Composable
 fun QuizScreen() {
@@ -57,8 +56,8 @@ fun QuizScreen() {
     val state = viewModel.state.collectAsState().value
     var showConfig by remember { mutableStateOf(true) }
 
-    var selectedDifficulty by remember { mutableStateOf(Difficulty.Easy) }
-    var selectedCategory by remember { mutableStateOf(QuestionType.General_Knowledge) }
+    var selectedDifficulty by remember { mutableStateOf(Difficulty.Facil) }
+    var selectedCategory by remember { mutableStateOf(QuestionType.Conocimiento_general) }
 
     AppTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
@@ -123,7 +122,9 @@ fun QuizConfigSection(
     val showCategoryMenu = remember { mutableStateOf(false) }
     val numQuestionsOptions = listOf(5, 10, 15, 20)
     val difficultyOptions = Difficulty.entries
-    val categoryOptions = QuestionType.entries
+    val categoryOptions = QuestionType.entries.filter {
+        it != QuestionType.Banderas && it != QuestionType.Escudos
+    }
 
     Text(
         text = "Configuración del Quiz",
@@ -167,7 +168,12 @@ fun QuizConfigSection(
                 ) {
                     numQuestionsOptions.forEach { n ->
                         DropdownMenuItem(
-                            text = { Text(n.toString(), modifier = Modifier.widthIn(min = 100.dp)) },
+                            text = {
+                                Text(
+                                    n.toString(),
+                                    modifier = Modifier.widthIn(min = 100.dp)
+                                )
+                            },
                             onClick = {
                                 onNumQuestionsSelected(n)
                                 showNumQuestionsMenu.value = false
@@ -193,7 +199,13 @@ fun QuizConfigSection(
                 ) {
                     difficultyOptions.forEach { difficulty ->
                         DropdownMenuItem(
-                            text = { Text(difficulty.name.replaceFirstChar { it.uppercase() }.lowercase().replace("_", " ").replaceFirstChar { it.uppercase() }, modifier = Modifier.widthIn(min = 120.dp)) },
+                            text = {
+                                Text(
+                                    difficulty.name.replaceFirstChar { it.uppercase() }.lowercase()
+                                        .replace("_", " ").replaceFirstChar { it.uppercase() },
+                                    modifier = Modifier.widthIn(min = 120.dp)
+                                )
+                            },
                             onClick = {
                                 onDifficultySelected(difficulty)
                                 showDifficultyMenu.value = false
@@ -209,9 +221,18 @@ fun QuizConfigSection(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Icon(Icons.Default.Category, contentDescription = null, tint = Color(0xFF68A500))
+                    Icon(
+                        Icons.Default.Category,
+                        contentDescription = null,
+                        tint = Color(0xFF68A500)
+                    )
                     Spacer(Modifier.width(8.dp))
-                    Text("Categoría: ${selectedCategory.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }}", fontWeight = FontWeight.Medium)
+                    Text(
+                        "Categoría: ${
+                            selectedCategory.name.replace('_', ' ').lowercase()
+                                .replaceFirstChar { it.uppercase() }
+                        }", fontWeight = FontWeight.Medium
+                    )
                 }
                 DropdownMenu(
                     expanded = showCategoryMenu.value,
@@ -219,7 +240,13 @@ fun QuizConfigSection(
                 ) {
                     categoryOptions.forEach { category ->
                         DropdownMenuItem(
-                            text = { Text(category.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }, modifier = Modifier.widthIn(min = 140.dp)) },
+                            text = {
+                                Text(
+                                    category.name.replace('_', ' ').lowercase()
+                                        .replaceFirstChar { it.uppercase() },
+                                    modifier = Modifier.widthIn(min = 140.dp)
+                                )
+                            },
                             onClick = {
                                 onCategorySelected(category)
                                 showCategoryMenu.value = false
@@ -272,8 +299,9 @@ fun QuizContentSection(
                     question = currentQuestion.question.statement,
                     answers = currentQuestion.answer.map { it.text },
                     selectedAnswerIndex = state.selectedAnswerId?.let { id ->
-                        currentQuestion.answer.indexOfFirst { it.id == id }
-                            .takeIf { it >= 0 }
+                        currentQuestion.answer.indexOfFirst {
+                            it.id == id
+                        }.takeIf { it >= 0 }
                     },
                     isAnswerCorrect = state.isAnswerCorrect,
                     onAnswerSelected = onAnswerSelected,
@@ -339,8 +367,8 @@ fun QuizCard(
     ) {
         answers.forEachIndexed { index, answer ->
             val background = when {
-                selectedAnswerIndex == index && isAnswerCorrect == true -> Color(0xFFB9F6CA) // Verde
-                selectedAnswerIndex == index && isAnswerCorrect == false -> Color(0xFFFF8A80) // Rojo
+                selectedAnswerIndex == index && isAnswerCorrect == true -> Color(0xFFB9F6CA)
+                selectedAnswerIndex == index && isAnswerCorrect == false -> Color(0xFFFF8A80)
                 else -> Color(0xFFF5F5F5)
             }
             Box(
@@ -349,9 +377,7 @@ fun QuizCard(
                     .background(background, RoundedCornerShape(8.dp))
                     .padding(16.dp)
                     .clickable(enabled = !isLoading && selectedAnswerIndex == null) {
-                        onAnswerSelected(
-                            index
-                        )
+                        onAnswerSelected(index)
                     },
                 contentAlignment = Alignment.CenterStart
             ) {

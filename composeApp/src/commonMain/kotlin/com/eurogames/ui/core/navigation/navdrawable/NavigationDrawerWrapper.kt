@@ -73,7 +73,7 @@ fun NavigationDrawerWrapper(
                     GameScreen(
                         navigateToGame = { gameId, gameType ->
                             when (gameType) {
-                                GameType.Guess_the_flag -> navController.navigate(
+                                GameType.Adivinar_banderas -> navController.navigate(
                                     GuessTheFlag(gameId)
                                 )
 
