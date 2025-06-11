@@ -1,4 +1,4 @@
-package com.eurogames.session
+package com.eurogames.domain.session
 
 import com.eurogames.domain.model.UserModel
 

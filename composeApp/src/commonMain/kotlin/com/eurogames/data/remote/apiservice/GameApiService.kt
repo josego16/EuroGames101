@@ -11,7 +11,7 @@ class GameApiService(private val client: HttpClient) {
             client.get("games").body<List<GameResponseDto>>()
         }.getOrDefault(emptyList())
     }
-    suspend fun getGameById(id: String): GameResponseDto? {
+    suspend fun getGameById(id: Int): GameResponseDto? {
         return runCatching {
             client.get("games/$id").body<GameResponseDto>()
         }.getOrNull()

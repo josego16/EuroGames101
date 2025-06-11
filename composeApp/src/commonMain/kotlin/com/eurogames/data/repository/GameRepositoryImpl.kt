@@ -16,7 +16,7 @@ class GameRepositoryImpl(private val apiService: GameApiService) : GameRepositor
 
     override suspend fun getGameById(id: Int): Result<GameModel?> {
         return runCatching {
-            apiService.getGameById(id.toString())?.toDomain()
+            apiService.getGameById(id)?.toDomain()
         }.fold(
             onSuccess = {
                 if (it != null) Result.Success(it)

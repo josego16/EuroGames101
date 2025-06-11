@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
 import com.eurogames.domain.repository.TokenStoreRepository
+import com.eurogames.domain.session.SessionManager
 import com.eurogames.domain.usecase.auth.SignInUseCase
-import com.eurogames.session.SessionManager
 import com.eurogames.ui.state.SignInState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
