@@ -52,9 +52,11 @@ import com.eurogames.ui.viewmodels.minigames.MinigamesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun GuessTheFlagScreen() {
+fun GuessTheFlagScreen(resetState: () -> Unit) {
     val viewmodel: MinigamesViewModel = koinViewModel()
     val state = viewmodel.state.collectAsState().value
+    val scoreState = viewmodel.scoreState.collectAsState().value
+    var showResult by remember { mutableStateOf(false) }
 
     var showConfig by remember { mutableStateOf(true) }
     var selectedDifficulty by remember { mutableStateOf(Difficulty.Facil) }
@@ -89,19 +91,33 @@ fun GuessTheFlagScreen() {
                         }
                     )
                 } else {
-                    GuessTheFlagContentSection(
-                        state = state,
-                        onPrev = { viewmodel.prevQuestion() },
-                        onNext = { viewmodel.nextQuestion() },
-                        onAnswerSelected = { answerIdx ->
-                            val currentQuestion =
-                                state.questions.getOrNull(state.currentQuestionIndex)
-                            currentQuestion?.let {
-                                val answerId = it.answer[answerIdx].id
-                                viewmodel.selectAnswer(answerId)
+                    if (showResult) {
+                        com.eurogames.ui.screens.game.gamesession.ScoreResultScreen(
+                            scoreState = scoreState,
+                            onBack = {
+                                showResult = false
+                                resetState()
+                                viewmodel.resetScoreState()
+                                showConfig = true
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        GuessTheFlagContentSection(
+                            state = state,
+                            onPrev = { viewmodel.prevQuestion() },
+                            onNext = { viewmodel.nextQuestion() },
+                            onAnswerSelected = { answerIdx ->
+                                val currentQuestion =
+                                    state.questions.getOrNull(state.currentQuestionIndex)
+                                currentQuestion?.let {
+                                    val answerId = it.answer[answerIdx].id
+                                    viewmodel.selectAnswer(answerId)
+                                }
+                            },
+                            showResultButton = scoreState.isGameFinished && !showResult,
+                            onShowResult = { showResult = true }
+                        )
+                    }
                 }
             }
         }
@@ -121,7 +137,7 @@ fun GuessTheFlagConfigSection(
     val showNumQuestionsMenu = remember { mutableStateOf(false) }
     val showDifficultyMenu = remember { mutableStateOf(false) }
     val showCategoryMenu = remember { mutableStateOf(false) }
-    val numQuestionsOptions = listOf(5, 10, 15, 20)
+    val numQuestionsOptions = listOf(5, 10)
     val difficultyOptions = Difficulty.entries
     val categoryOptions = QuestionType.entries.filter {
         it == QuestionType.Banderas || it == QuestionType.Escudos
@@ -279,6 +295,8 @@ fun GuessTheFlagContentSection(
     onPrev: () -> Unit,
     onNext: () -> Unit,
     onAnswerSelected: (Int) -> Unit,
+    showResultButton: Boolean,
+    onShowResult: () -> Unit
 ) {
     when {
         state.isLoading -> {
@@ -316,6 +334,19 @@ fun GuessTheFlagContentSection(
                     onPrev = onPrev,
                     onNext = onNext
                 )
+                if (showResultButton) {
+                    Button(
+                        onClick = onShowResult,
+                        modifier = Modifier.padding(top = 16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Green)
+                    ) {
+                        Text(
+                            "Ver resultados",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }

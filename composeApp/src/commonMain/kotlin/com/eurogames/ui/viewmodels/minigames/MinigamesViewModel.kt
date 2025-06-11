@@ -7,6 +7,7 @@ import com.eurogames.domain.enums.Difficulty
 import com.eurogames.domain.enums.QuestionType
 import com.eurogames.domain.repository.MiniGamesRepository
 import com.eurogames.ui.state.MiniGameState
+import com.eurogames.ui.state.ScoreState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -14,6 +15,9 @@ import kotlinx.coroutines.launch
 class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) : ViewModel() {
     private val _state = MutableStateFlow(MiniGameState())
     val state: StateFlow<MiniGameState> = _state
+
+    private val _scoreState = MutableStateFlow(ScoreState())
+    val scoreState: StateFlow<ScoreState> = _scoreState
 
     private var selectedDifficulty: Difficulty = Difficulty.Facil
     private var selectedCategory: QuestionType = QuestionType.Conocimiento_general
@@ -101,7 +105,7 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
 
     fun selectAnswer(answerId: Int) {
         val currentQuestion = _state.value.questions.getOrNull(_state.value.currentQuestionIndex)
-        if (currentQuestion != null) {
+        if (currentQuestion != null && !_scoreState.value.isGameFinished) {
             _state.value = _state.value.copy(
                 isLoading = true,
                 selectedAnswerId = answerId,
@@ -113,8 +117,30 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
                     miniGamesRepository.isAnswerCorrect(currentQuestion.question.id, answerId)
                 when (result) {
                     is Result.Success -> {
+                        val isCorrect = result.data
+                        val newCorrect =
+                            if (isCorrect) _scoreState.value.correctAnswers + 1 else _scoreState.value.correctAnswers
+                        val newWrong =
+                            if (!isCorrect) _scoreState.value.wrongAnswers + 1 else _scoreState.value.wrongAnswers
+                        val isLast =
+                            _state.value.currentQuestionIndex == _state.value.questions.size - 1
+                        val pointsPerCorrect = 10.0
+                        val penaltyPerWrong = pointsPerCorrect / 2
+                        val newScore = if (isLast) {
+                            (newCorrect * pointsPerCorrect) - (newWrong * penaltyPerWrong)
+                        } else _scoreState.value.scoreValue
+                        val newStatus =
+                            if (isLast) com.eurogames.domain.enums.SessionStatus.Finalizado else com.eurogames.domain.enums.SessionStatus.En_progreso
+                        _scoreState.value = _scoreState.value.copy(
+                            correctAnswers = newCorrect,
+                            wrongAnswers = newWrong,
+                            scoreValue = newScore,
+                            isGameFinished = isLast,
+                            isLoading = false,
+                            status = newStatus
+                        )
                         _state.value = _state.value.copy(
-                            isAnswerCorrect = result.data,
+                            isAnswerCorrect = isCorrect,
                             isLoading = false
                         )
                     }
@@ -124,9 +150,17 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
                             error = result.message,
                             isLoading = false
                         )
+                        _scoreState.value = _scoreState.value.copy(
+                            error = result.message,
+                            isLoading = false
+                        )
                     }
                 }
             }
         }
+    }
+
+    fun resetScoreState() {
+        _scoreState.value = ScoreState()
     }
 }

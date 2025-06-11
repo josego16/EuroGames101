@@ -46,15 +46,18 @@ import com.eurogames.domain.enums.QuestionType
 import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.core.utils.Green
 import com.eurogames.ui.core.utils.Pink
+import com.eurogames.ui.screens.game.gamesession.ScoreResultScreen
 import com.eurogames.ui.state.MiniGameState
 import com.eurogames.ui.viewmodels.minigames.MinigamesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun QuizScreen() {
+fun QuizScreen(resetState: () -> Unit) {
     val viewModel: MinigamesViewModel = koinViewModel()
     val state = viewModel.state.collectAsState().value
+    val scoreState = viewModel.scoreState.collectAsState().value
     var showConfig by remember { mutableStateOf(true) }
+    var showResult by remember { mutableStateOf(false) }
 
     var selectedDifficulty by remember { mutableStateOf(Difficulty.Facil) }
     var selectedCategory by remember { mutableStateOf(QuestionType.Conocimiento_general) }
@@ -88,19 +91,33 @@ fun QuizScreen() {
                         }
                     )
                 } else {
-                    QuizContentSection(
-                        state = state,
-                        onPrev = { viewModel.prevQuestion() },
-                        onNext = { viewModel.nextQuestion() },
-                        onAnswerSelected = { answerIdx ->
-                            val currentQuestion =
-                                state.questions.getOrNull(state.currentQuestionIndex)
-                            currentQuestion?.let {
-                                val answerId = it.answer[answerIdx].id
-                                viewModel.selectAnswer(answerId)
+                    if (showResult) {
+                        ScoreResultScreen(
+                            scoreState = scoreState,
+                            onBack = {
+                                showResult = false
+                                resetState()
+                                viewModel.resetScoreState()
+                                showConfig = true
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        QuizContentSection(
+                            state = state,
+                            onPrev = { viewModel.prevQuestion() },
+                            onNext = { viewModel.nextQuestion() },
+                            onAnswerSelected = { answerIdx ->
+                                val currentQuestion =
+                                    state.questions.getOrNull(state.currentQuestionIndex)
+                                currentQuestion?.let {
+                                    val answerId = it.answer[answerIdx].id
+                                    viewModel.selectAnswer(answerId)
+                                }
+                            },
+                            showResultButton = scoreState.isGameFinished && !showResult,
+                            onShowResult = { showResult = true }
+                        )
+                    }
                 }
             }
         }
@@ -120,7 +137,7 @@ fun QuizConfigSection(
     val showNumQuestionsMenu = remember { mutableStateOf(false) }
     val showDifficultyMenu = remember { mutableStateOf(false) }
     val showCategoryMenu = remember { mutableStateOf(false) }
-    val numQuestionsOptions = listOf(5, 10, 15, 20)
+    val numQuestionsOptions = listOf(5, 10)
     val difficultyOptions = Difficulty.entries
     val categoryOptions = QuestionType.entries.filter {
         it != QuestionType.Banderas && it != QuestionType.Escudos
@@ -277,7 +294,9 @@ fun QuizContentSection(
     state: MiniGameState,
     onPrev: () -> Unit,
     onNext: () -> Unit,
-    onAnswerSelected: (Int) -> Unit
+    onAnswerSelected: (Int) -> Unit,
+    showResultButton: Boolean = false,
+    onShowResult: () -> Unit = {}
 ) {
     when {
         state.isLoading -> {
@@ -313,6 +332,19 @@ fun QuizContentSection(
                     onPrev = onPrev,
                     onNext = onNext
                 )
+                if (showResultButton) {
+                    Button(
+                        onClick = onShowResult,
+                        modifier = Modifier.padding(top = 16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Green)
+                    ) {
+                        Text(
+                            "Ver resultados",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }

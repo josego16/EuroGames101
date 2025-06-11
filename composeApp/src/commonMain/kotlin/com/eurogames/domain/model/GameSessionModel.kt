@@ -14,8 +14,8 @@ data class GameSessionModel(
     var userId: Int,
 
     val scoreSession : Double = 0.0,
-    val difficulty: Difficulty = Difficulty.Facil,
-    val gameType: GameType = GameType.Quiz,
+    val difficulty: Difficulty,
+    val gameType: GameType,
     val status: SessionStatus = SessionStatus.En_progreso,
     val startedAt : Instant = Clock.System.now(),
     val finishedAt : Instant? = null,
