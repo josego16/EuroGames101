@@ -7,6 +7,7 @@ import com.eurogames.ui.viewmodels.country.CountryViewModel
 import com.eurogames.ui.viewmodels.game.GameViewModel
 import com.eurogames.ui.viewmodels.minigames.MinigamesViewModel
 import com.eurogames.ui.viewmodels.profile.ProfileViewModel
+import com.eurogames.ui.viewmodels.score.ScoreRankingViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -18,4 +19,5 @@ val uiModule = module {
     viewModelOf(::CountryViewModel)
     viewModelOf(::GameViewModel)
     viewModelOf(::MinigamesViewModel)
+    viewModelOf(::ScoreRankingViewModel)
 }

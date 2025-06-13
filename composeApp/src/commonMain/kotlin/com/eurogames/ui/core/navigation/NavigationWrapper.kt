@@ -25,12 +25,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.eurogames.domain.repository.TokenStoreRepository
-import com.eurogames.session.SessionManager
+import com.eurogames.domain.session.SessionManager
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.CountryItem
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.GameItem
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.HomeItem
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.LogoutItem
 import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.ProfileItem
+import com.eurogames.ui.core.navigation.navdrawable.DrawableBarItem.RankingItem
 import com.eurogames.ui.core.navigation.navdrawable.DrawerHeader
 import com.eurogames.ui.core.navigation.navdrawable.NavigationDrawerWrapper
 import com.eurogames.ui.screens.splash.SplashScreen
@@ -83,7 +84,14 @@ fun NavigationWrapper() {
                 val drawerNavController = rememberNavController()
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
-                val drawerItems = listOf(HomeItem(), CountryItem(), GameItem(), ProfileItem(), LogoutItem())
+                val drawerItems = listOf(
+                    HomeItem(),
+                    CountryItem(),
+                    GameItem(),
+                    RankingItem(),
+                    ProfileItem(),
+                    LogoutItem()
+                )
 
                 ModalNavigationDrawer(
                     drawerState = drawerState,

@@ -11,7 +11,7 @@ actual fun getBaseUrl(): String {
     return if (isEmulator()) {
         "http://10.0.2.2:8081"
     } else {
-        "http://192.168.0.25:8081"
+        "https://ace-improved-sunfish.ngrok-free.app"
     }
 }
 

@@ -4,15 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eurogames.Result
 import com.eurogames.domain.enums.Difficulty
+import com.eurogames.domain.enums.GameType
 import com.eurogames.domain.enums.QuestionType
+import com.eurogames.domain.model.ScoreModel
 import com.eurogames.domain.repository.MiniGamesRepository
+import com.eurogames.domain.repository.ScoreRepository
+import com.eurogames.domain.session.SessionManager
 import com.eurogames.ui.state.MiniGameState
 import com.eurogames.ui.state.ScoreState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) : ViewModel() {
+class MinigamesViewModel(
+    private val miniGamesRepository: MiniGamesRepository,
+    private val scoreRepository: ScoreRepository
+) : ViewModel() {
     private val _state = MutableStateFlow(MiniGameState())
     val state: StateFlow<MiniGameState> = _state
 
@@ -21,6 +28,8 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
 
     private var selectedDifficulty: Difficulty = Difficulty.Facil
     private var selectedCategory: QuestionType = QuestionType.Conocimiento_general
+    private var selectedGameType: GameType = GameType.Quiz
+    private var selectedGameId: Int? = null
 
     init {
         loadQuestions(
@@ -47,13 +56,19 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
         selectedCategory = category
     }
 
+    fun setGameId(gameId: Int) {
+        selectedGameId = gameId
+    }
+
     fun loadQuestions(
         difficulty: Difficulty,
         category: QuestionType?,
-        numQuestions: Int? = null
+        numQuestions: Int? = null,
+        gameType: GameType = GameType.Quiz
     ) {
         selectedDifficulty = difficulty
         selectedCategory = category ?: QuestionType.Conocimiento_general
+        selectedGameType = gameType
         _state.value = _state.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             val result = miniGamesRepository.getQuestionWithAnswersForGames(difficulty, category)
@@ -106,6 +121,7 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
     fun selectAnswer(answerId: Int) {
         val currentQuestion = _state.value.questions.getOrNull(_state.value.currentQuestionIndex)
         if (currentQuestion != null && !_scoreState.value.isGameFinished) {
+            println("[MinigamesViewModel] selectAnswer: answerId=$answerId, currentQuestionIndex=${_state.value.currentQuestionIndex}")
             _state.value = _state.value.copy(
                 isLoading = true,
                 selectedAnswerId = answerId,
@@ -113,8 +129,7 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
                 error = null
             )
             viewModelScope.launch {
-                val result =
-                    miniGamesRepository.isAnswerCorrect(currentQuestion.question.id, answerId)
+                val result = miniGamesRepository.isAnswerCorrect(currentQuestion.question.id, answerId)
                 when (result) {
                     is Result.Success -> {
                         val isCorrect = result.data
@@ -143,6 +158,10 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
                             isAnswerCorrect = isCorrect,
                             isLoading = false
                         )
+                        if (isLast) {
+                            println("[MinigamesViewModel] Última pregunta respondida. Llamando a saveScore()...")
+                            saveScore()
+                        }
                     }
 
                     is Result.Error -> {
@@ -157,6 +176,33 @@ class MinigamesViewModel(private val miniGamesRepository: MiniGamesRepository) :
                     }
                 }
             }
+        }
+    }
+
+    fun saveScore() {
+        val userId = SessionManager.userId ?: run {
+            println("[MinigamesViewModel] saveScore: userId es null, no se guarda la puntuación.")
+            return
+        }
+        val gameId = selectedGameId ?: run {
+            println("[MinigamesViewModel] saveScore: gameId es null, no se guarda la puntuación.")
+            return
+        }
+        val score = ScoreModel(
+            id = 0,
+            userId = userId,
+            gameId = gameId,
+            scoreValue = _scoreState.value.scoreValue,
+            gameType = selectedGameType,
+            difficulty = selectedDifficulty,
+            correctAnswers = _scoreState.value.correctAnswers,
+            wrongAnswers = _scoreState.value.wrongAnswers,
+            totalQuestions = _state.value.questions.size
+        )
+        println("[MinigamesViewModel] saveScore: userId=$userId, gameId=$gameId, score=$score")
+        viewModelScope.launch {
+            val result = scoreRepository.createScore(score)
+            println("[MinigamesViewModel] Resultado de createScore: $result")
         }
     }
 

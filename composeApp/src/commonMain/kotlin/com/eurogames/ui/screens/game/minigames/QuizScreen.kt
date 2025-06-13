@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eurogames.domain.enums.Difficulty
+import com.eurogames.domain.enums.GameType
 import com.eurogames.domain.enums.QuestionType
 import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.core.utils.Green
@@ -52,7 +53,7 @@ import com.eurogames.ui.viewmodels.minigames.MinigamesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun QuizScreen(resetState: () -> Unit) {
+fun QuizScreen(resetState: () -> Unit, gameId: Int) {
     val viewModel: MinigamesViewModel = koinViewModel()
     val state = viewModel.state.collectAsState().value
     val scoreState = viewModel.scoreState.collectAsState().value
@@ -84,9 +85,11 @@ fun QuizScreen(resetState: () -> Unit) {
                         onNumQuestionsSelected = { viewModel.setNumQuestions(it) },
                         onStart = {
                             showConfig = false
+                            viewModel.setGameId(gameId)
                             viewModel.loadQuestions(
                                 difficulty = selectedDifficulty,
-                                category = selectedCategory
+                                category = selectedCategory,
+                                gameType = GameType.Quiz
                             )
                         }
                     )

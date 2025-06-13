@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.eurogames.domain.enums.GameType
-import com.eurogames.session.SessionManager.user
+import com.eurogames.domain.session.SessionManager.user
 import com.eurogames.ui.core.navigation.CountryDetail
 import com.eurogames.ui.core.navigation.GuessTheFlag
 import com.eurogames.ui.core.navigation.Quiz
@@ -90,11 +90,40 @@ fun NavigationDrawerWrapper(
 
         // GuessTheFlagScreen
         composable<GuessTheFlag> { navBackStackEntry ->
-            GuessTheFlagScreen()
+            val args = navBackStackEntry.toRoute<GuessTheFlag>()
+            GuessTheFlagScreen(
+                resetState = {
+                    navController.navigate(Routes.Game.route) {
+                        popUpTo(Routes.Game.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+                gameId = args.id
+            )
         }
         // QuizScreen
         composable<Quiz> { navBackStackEntry ->
-            QuizScreen()
+            val args = navBackStackEntry.toRoute<Quiz>()
+            QuizScreen(
+                resetState = {
+                    navController.navigate(Routes.Game.route) {
+                        popUpTo(Routes.Game.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+                gameId = args.id
+            )
+        }
+
+        // RankingItem
+        composable(Routes.Ranking.route) {
+            MainScreen(
+                screenTitle = "Ranking",
+                screenContent = { com.eurogames.ui.screens.score.ScoreRankingScreen() },
+                onDrawerClick = { scope.launch { drawerState.open() } }
+            )
         }
 
         // ProfileItem

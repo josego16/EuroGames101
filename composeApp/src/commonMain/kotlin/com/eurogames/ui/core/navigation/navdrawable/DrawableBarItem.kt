@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Games
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.sharp.Flag
+import androidx.compose.material.icons.sharp.Scoreboard
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.eurogames.ui.core.navigation.Routes
@@ -37,6 +38,14 @@ sealed class DrawableBarItem {
         override val title: String = "Game",
         override val icon: @Composable () -> Unit = {
             Icon(imageVector = Icons.Default.Games, contentDescription = "GameItem")
+        }
+    ) : DrawableBarItem()
+
+    data class RankingItem(
+        override val route: String = Routes.Ranking.route,
+        override val title: String = "Ranking",
+        override val icon: @Composable () -> Unit = {
+            Icon(imageVector = Icons.Sharp.Scoreboard, contentDescription = "RankingItem")
         }
     ) : DrawableBarItem()
 

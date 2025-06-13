@@ -5,6 +5,7 @@ import com.eurogames.data.remote.response.ScoreResponseDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
@@ -36,6 +37,9 @@ class ScoreApiService(private val client: HttpClient) {
     suspend fun createScore(createDto: ScoreCreateDto): ScoreResponseDto {
         return client.post("scores") {
             setBody(createDto)
+            headers {
+                append("Content-Type", "application/json")
+            }
         }.body()
     }
 }

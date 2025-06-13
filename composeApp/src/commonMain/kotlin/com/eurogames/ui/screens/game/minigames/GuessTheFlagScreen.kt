@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.eurogames.domain.enums.Difficulty
+import com.eurogames.domain.enums.GameType
 import com.eurogames.domain.enums.QuestionType
 import com.eurogames.ui.core.utils.AppTheme
 import com.eurogames.ui.core.utils.Green
@@ -52,12 +53,11 @@ import com.eurogames.ui.viewmodels.minigames.MinigamesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun GuessTheFlagScreen(resetState: () -> Unit) {
+fun GuessTheFlagScreen(resetState: () -> Unit, gameId: Int) {
     val viewmodel: MinigamesViewModel = koinViewModel()
     val state = viewmodel.state.collectAsState().value
     val scoreState = viewmodel.scoreState.collectAsState().value
     var showResult by remember { mutableStateOf(false) }
-
     var showConfig by remember { mutableStateOf(true) }
     var selectedDifficulty by remember { mutableStateOf(Difficulty.Facil) }
     var selectedCategory by remember { mutableStateOf(QuestionType.Banderas) }
@@ -84,9 +84,11 @@ fun GuessTheFlagScreen(resetState: () -> Unit) {
                         onNumQuestionsSelected = { viewmodel.setNumQuestions(it) },
                         onStart = {
                             showConfig = false
+                            viewmodel.setGameId(gameId)
                             viewmodel.loadQuestions(
                                 difficulty = selectedDifficulty,
-                                category = selectedCategory
+                                category = selectedCategory,
+                                gameType = GameType.Adivinar_banderas
                             )
                         }
                     )
@@ -365,7 +367,8 @@ fun GuessTheFlagNavigationSection(
     ) {
         Button(
             onClick = onPrev,
-            enabled = currentIndex > 0
+            enabled = currentIndex > 0,
+            modifier = Modifier.width(120.dp)
         ) {
             Text("Anterior")
         }
@@ -375,7 +378,8 @@ fun GuessTheFlagNavigationSection(
 
         Button(
             onClick = onNext,
-            enabled = currentIndex < total - 1
+            enabled = currentIndex < total - 1,
+            modifier = Modifier.width(120.dp)
         ) {
             Text("Siguiente")
         }
@@ -412,7 +416,7 @@ fun GuessTheFlagCard(
                 model = imageUrl,
                 contentDescription = "Imagen de bandera o escudo",
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
+                    .width(180.dp)
                     .padding(bottom = 16.dp)
             )
         }

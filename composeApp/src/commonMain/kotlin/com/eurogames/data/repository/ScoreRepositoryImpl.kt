@@ -60,10 +60,11 @@ class ScoreRepositoryImpl(private val apiService: ScoreApiService) : ScoreReposi
 
     override suspend fun createScore(score: ScoreModel): Result<ScoreModel> {
         return runCatching {
-            apiService.createScore(score.toCreate()).toDomain()
+            val response = apiService.createScore(score.toCreate())
+            response.toDomain()
         }.fold(
             onSuccess = { Result.Success(it) },
-            onFailure = { Result.Error(it.message ?: "Error al crear la puntuación", it) }
+            onFailure = { Result.Error(it.message ?: "Error al guardar la puntuación", it) }
         )
     }
 }

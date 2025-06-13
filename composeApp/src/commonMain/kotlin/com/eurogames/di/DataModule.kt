@@ -3,74 +3,53 @@ package com.eurogames.di
 import com.eurogames.data.remote.apiservice.AuthApiService
 import com.eurogames.data.remote.apiservice.CountryApiService
 import com.eurogames.data.remote.apiservice.GameApiService
+import com.eurogames.data.remote.apiservice.GameSessionApiService
 import com.eurogames.data.remote.apiservice.MiniGamesApiService
+import com.eurogames.data.remote.apiservice.ScoreApiService
 import com.eurogames.data.remote.apiservice.UserApiService
 import com.eurogames.data.remote.paging.CountryPagingSource
 import com.eurogames.data.repository.AuthRepositoryImpl
 import com.eurogames.data.repository.CountryRepositoryImpl
 import com.eurogames.data.repository.GameRepositoryImpl
+import com.eurogames.data.repository.GameSessionRepositoryImpl
 import com.eurogames.data.repository.MiniGamesRepositoryImpl
+import com.eurogames.data.repository.ScoreRepositoryImpl
 import com.eurogames.data.repository.TokenStoreRepositoryImpl
 import com.eurogames.data.repository.UserRepositoryImpl
 import com.eurogames.domain.repository.AuthRepository
 import com.eurogames.domain.repository.CountryRepository
 import com.eurogames.domain.repository.GameRepository
+import com.eurogames.domain.repository.GameSessionRepository
 import com.eurogames.domain.repository.MiniGamesRepository
+import com.eurogames.domain.repository.ScoreRepository
 import com.eurogames.domain.repository.TokenStoreRepository
 import com.eurogames.domain.repository.UserRepository
 import com.eurogames.getBaseUrl
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.header
-import io.ktor.http.URLProtocol
-import io.ktor.http.Url
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val dataModule = module {
     single {
-        val baseUrl = getBaseUrl()
-        val parsedUrl = Url(baseUrl)
+        val baseUrl: String = getBaseUrl()
         val tokenStore: TokenStoreRepository = get()
-
-        HttpClient {
-            install(ContentNegotiation) {
-                json(Json { ignoreUnknownKeys = true })
-            }
-            install(DefaultRequest) {
-                url {
-                    protocol = URLProtocol.HTTP
-                    host = parsedUrl.host
-                    port = parsedUrl.port
-                }
-                // Obtener token dinámicamente en cada petición
-                val token = tokenStore.getToken()
-                if (!token.isNullOrBlank()) {
-                    header("Authorization", "Bearer $token")
-                }
-            }
-            install(Logging) {
-                level = LogLevel.ALL
-            }
-        }
+        provideHttpClient(tokenStore, baseUrl)
     }
 
     factoryOf(::AuthApiService)
-    factoryOf(::CountryApiService)
-    factoryOf(::GameApiService)
-    factoryOf(::MiniGamesApiService)
     factoryOf(::UserApiService)
+    factoryOf(::CountryApiService)
     factoryOf(::CountryPagingSource)
+    factoryOf(::GameApiService)
+    factoryOf(::GameSessionApiService)
+    factoryOf(::MiniGamesApiService)
+    factoryOf(::ScoreApiService)
 
     single<TokenStoreRepository> { TokenStoreRepositoryImpl() }
     factory<AuthRepository> { AuthRepositoryImpl(get(), tokenStoreRepository = get()) }
+    factory<UserRepository> { UserRepositoryImpl(get()) }
     factory<CountryRepository> { CountryRepositoryImpl(get()) }
     factory<GameRepository> { GameRepositoryImpl(get()) }
+    factory<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
     factory<MiniGamesRepository> { MiniGamesRepositoryImpl(get()) }
-    factory<UserRepository> { UserRepositoryImpl(get()) }
+    factory<ScoreRepository> { ScoreRepositoryImpl(get()) }
 }
