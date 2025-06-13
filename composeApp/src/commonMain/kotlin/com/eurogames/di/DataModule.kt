@@ -3,7 +3,6 @@ package com.eurogames.di
 import com.eurogames.data.remote.apiservice.AuthApiService
 import com.eurogames.data.remote.apiservice.CountryApiService
 import com.eurogames.data.remote.apiservice.GameApiService
-import com.eurogames.data.remote.apiservice.GameSessionApiService
 import com.eurogames.data.remote.apiservice.MiniGamesApiService
 import com.eurogames.data.remote.apiservice.ScoreApiService
 import com.eurogames.data.remote.apiservice.UserApiService
@@ -11,7 +10,6 @@ import com.eurogames.data.remote.paging.CountryPagingSource
 import com.eurogames.data.repository.AuthRepositoryImpl
 import com.eurogames.data.repository.CountryRepositoryImpl
 import com.eurogames.data.repository.GameRepositoryImpl
-import com.eurogames.data.repository.GameSessionRepositoryImpl
 import com.eurogames.data.repository.MiniGamesRepositoryImpl
 import com.eurogames.data.repository.ScoreRepositoryImpl
 import com.eurogames.data.repository.TokenStoreRepositoryImpl
@@ -19,7 +17,6 @@ import com.eurogames.data.repository.UserRepositoryImpl
 import com.eurogames.domain.repository.AuthRepository
 import com.eurogames.domain.repository.CountryRepository
 import com.eurogames.domain.repository.GameRepository
-import com.eurogames.domain.repository.GameSessionRepository
 import com.eurogames.domain.repository.MiniGamesRepository
 import com.eurogames.domain.repository.ScoreRepository
 import com.eurogames.domain.repository.TokenStoreRepository
@@ -40,7 +37,6 @@ val dataModule = module {
     factoryOf(::CountryApiService)
     factoryOf(::CountryPagingSource)
     factoryOf(::GameApiService)
-    factoryOf(::GameSessionApiService)
     factoryOf(::MiniGamesApiService)
     factoryOf(::ScoreApiService)
 
@@ -49,7 +45,6 @@ val dataModule = module {
     factory<UserRepository> { UserRepositoryImpl(get()) }
     factory<CountryRepository> { CountryRepositoryImpl(get()) }
     factory<GameRepository> { GameRepositoryImpl(get()) }
-    factory<GameSessionRepository> { GameSessionRepositoryImpl(get()) }
     factory<MiniGamesRepository> { MiniGamesRepositoryImpl(get()) }
     factory<ScoreRepository> { ScoreRepositoryImpl(get()) }
 }
