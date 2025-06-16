@@ -7,4 +7,4 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
-actual fun getBaseUrl(): String = "http://localhost:8081"
+actual fun getBaseUrl(): String = "https://ace-improved-sunfish.ngrok-free.app"
